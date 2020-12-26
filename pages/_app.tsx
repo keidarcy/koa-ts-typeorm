@@ -7,8 +7,14 @@ import translations from '@shopify/polaris/locales/en.json';
 import type { AppProps, AppContext } from 'next/app';
 import ClientRouter from '../components/ClientRouter';
 import RoutePropagator from '../components/RoutePropagator';
-import React from 'react';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from 'react-apollo';
 
+const client = new ApolloClient({
+  fetchOptions: {
+    credentials: 'include'
+  }
+});
 interface MyAppInterface extends AppProps {
   shopOrigin: string;
 }
@@ -26,7 +32,9 @@ const MyApp = ({ Component, pageProps, shopOrigin }: MyAppInterface) => {
         <RoutePropagator />
         <ClientRouter />
         <AppProvider i18n={translations}>
-          <Component {...pageProps} />
+          <ApolloProvider client={client}>
+            <Component {...pageProps} />
+          </ApolloProvider>
         </AppProvider>
       </Provider>
     </>
