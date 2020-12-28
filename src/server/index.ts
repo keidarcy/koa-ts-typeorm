@@ -8,7 +8,7 @@ import { verifyRequest } from '@shopify/koa-shopify-auth';
 import next from 'next';
 import { DefaultState, DefaultContext, Context } from 'koa';
 import { OAuthStartOptions } from '@shopify/koa-shopify-auth/dist/src/types';
-import graphQLProxy, { ApiVersion } from '@shopify/koa-shopify-graphql-proxy';
+import { GraphQLClient } from 'graphql-request';
 
 dotenv.config();
 
@@ -23,12 +23,18 @@ const authConfig: OAuthStartOptions = {
   secret: process.env.SHOPIFY_API_SECRET_KEY ?? '',
   scopes: ['read_products', 'write_products'],
   async afterAuth(ctx: Context) {
-    const urlParams = new URLSearchParams(ctx.request.url);
-    const shop = urlParams.get('shop');
-
+    const { shop, accessToken } = ctx.session;
+    ctx.cookies.set('shopOrigin', shop, {
+      httpOnly: false,
+      secure: true,
+      sameSite: 'none'
+    });
+    console.log({ accessToken });
     ctx.redirect(`/?shop=${shop}`);
   }
 };
+
+interface ShopifyContext extends DefaultContext, GraphQLClient {}
 
 const server: Koa<DefaultState, DefaultContext> = new Koa();
 
@@ -36,9 +42,16 @@ app.prepare().then(() => {
   server.use(session({ secure: true, sameSite: 'none' }, server));
   server.keys = [process.env.SHOPIFY_API_SECRET_KEY ?? ''];
   server.use(createShopifyAuth(authConfig));
-  server.use(graphQLProxy({ version: ApiVersion.October20 }));
   server.use(verifyRequest());
-  server.use(async (ctx: Context) => {
+  server.use(async (ctx: ShopifyContext) => {
+    const { shop, accessToken } = ctx.session;
+    const client = new GraphQLClient(`https://${shop}//admin/api/2020-10/graphql.json`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': accessToken
+      }
+    });
+    ctx.req.GraphQLClient = client;
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;

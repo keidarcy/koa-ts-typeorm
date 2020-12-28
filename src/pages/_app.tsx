@@ -1,20 +1,15 @@
 import App from 'next/app';
 import Head from 'next/head';
-import { AppProvider } from '@shopify/polaris';
+import { AppProvider, FooterHelp, Link } from '@shopify/polaris';
 import { Provider } from '@shopify/app-bridge-react';
 import '@shopify/polaris/dist/styles.css';
 import translations from '@shopify/polaris/locales/en.json';
 import type { AppProps, AppContext } from 'next/app';
 import ClientRouter from '../components/ClientRouter';
 import RoutePropagator from '../components/RoutePropagator';
-import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from 'react-apollo';
+import { TitleBar } from '@shopify/app-bridge-react';
+import { useRouter } from 'next/router';
 
-const client = new ApolloClient({
-  fetchOptions: {
-    credentials: 'include'
-  }
-});
 interface MyAppInterface extends AppProps {
   shopOrigin: string;
 }
@@ -22,6 +17,7 @@ interface MyAppInterface extends AppProps {
 const MyApp = ({ Component, pageProps, shopOrigin }: MyAppInterface) => {
   //@ts-expect-errorts
   const config = { apiKey: API_KEY, shopOrigin, forceRedirect: false };
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -29,12 +25,28 @@ const MyApp = ({ Component, pageProps, shopOrigin }: MyAppInterface) => {
         <meta charSet="utf-8" />
       </Head>
       <Provider config={config}>
-        <RoutePropagator />
         <ClientRouter />
+        <RoutePropagator />
         <AppProvider i18n={translations}>
-          <ApolloProvider client={client}>
-            <Component {...pageProps} />
-          </ApolloProvider>
+          <TitleBar
+            title=""
+            secondaryActions={[
+              {
+                content: 'index',
+                onAction: () => router.push('/')
+              },
+              {
+                content: 'router test',
+                onAction: () => router.push('/hello')
+              }
+            ]}
+          />
+          <Component {...pageProps} />
+          <FooterHelp>
+            <Link url="https://karte.io/enterprise/" external>
+              お問い合わせ
+            </Link>
+          </FooterHelp>
         </AppProvider>
       </Provider>
     </>

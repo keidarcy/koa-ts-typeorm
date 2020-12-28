@@ -5,7 +5,7 @@ const Hello: React.FC = () => {
     <Page>
       <Layout>
         <Layout.AnnotatedSection
-          title="Default discount"
+          title="gan ni shuone Default he lodiscount"
           description="Add a product to Sample App, it will automatically be discounted."
         >
           <Card sectioned>
