@@ -1,14 +1,17 @@
 import App from 'next/app';
 import Head from 'next/head';
+import type { AppProps, AppContext } from 'next/app';
+import { useRouter } from 'next/router';
+import { IncomingMessage } from 'http';
+import '@shopify/polaris/dist/styles.css';
 import { AppProvider, FooterHelp, Link } from '@shopify/polaris';
 import { Provider } from '@shopify/app-bridge-react';
-import '@shopify/polaris/dist/styles.css';
 import translations from '@shopify/polaris/locales/en.json';
-import type { AppProps, AppContext } from 'next/app';
+import { TitleBar } from '@shopify/app-bridge-react';
 import ClientRouter from '../components/ClientRouter';
 import RoutePropagator from '../components/RoutePropagator';
-import { TitleBar } from '@shopify/app-bridge-react';
-import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { initApp } from '../utils/front.helper';
 
 interface MyAppInterface extends AppProps {
   shopOrigin: string;
@@ -18,6 +21,11 @@ const MyApp = ({ Component, pageProps, shopOrigin }: MyAppInterface) => {
   //@ts-expect-errorts
   const config = { apiKey: API_KEY, shopOrigin, forceRedirect: false };
   const router = useRouter();
+
+  useEffect(() => {
+    initApp();
+  }, []);
+
   return (
     <>
       <Head>
@@ -37,13 +45,13 @@ const MyApp = ({ Component, pageProps, shopOrigin }: MyAppInterface) => {
               },
               {
                 content: 'router test',
-                onAction: () => router.push('/hello')
+                onAction: () => router.push('/test')
               }
             ]}
           />
           <Component {...pageProps} />
           <FooterHelp>
-            <Link url="https://karte.io/enterprise/" external>
+            <Link url="https://github.com/keidarcy" external>
               お問い合わせ
             </Link>
           </FooterHelp>
@@ -53,10 +61,19 @@ const MyApp = ({ Component, pageProps, shopOrigin }: MyAppInterface) => {
   );
 };
 
+interface ShopifyIncomingMessage extends IncomingMessage {
+  cookies?: {
+    shopOrigin?: '';
+  };
+}
+
 MyApp.getInitialProps = async (appContext: AppContext) => {
   const appProps = await App.getInitialProps(appContext);
+  const shopOrigin = (appContext.ctx.req as ShopifyIncomingMessage)?.cookies?.shopOrigin
+    ? (appContext.ctx.req as ShopifyIncomingMessage).cookies.shopOrigin
+    : appContext.ctx.query.shop;
 
-  return { ...appProps, shopOrigin: appContext.ctx.query.shop };
+  return { ...appProps, shopOrigin };
 };
 
 export default MyApp;

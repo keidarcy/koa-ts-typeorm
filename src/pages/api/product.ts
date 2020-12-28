@@ -30,7 +30,6 @@ export default async (req: CustomRequest, res: NextApiResponse<Data>) => {
       }
     }
   `;
-  console.log({ gql: req.GraphQLClient });
   const shopify = await req.GraphQLClient.request(query);
   const posts = await prisma.post.findMany();
   res.status(200).json({ name: 'John Doe', posts, shopify });

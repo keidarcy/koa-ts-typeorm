@@ -1,6 +1,6 @@
 import { Card, Layout, Page } from '@shopify/polaris';
 
-const Hello: React.FC = () => {
+const Test: React.FC = () => {
   return (
     <Page>
       <Layout>
@@ -17,4 +17,4 @@ const Hello: React.FC = () => {
   );
 };
 
-export default Hello;
+export default Test;
