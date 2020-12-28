@@ -32,10 +32,9 @@ const authConfig: OAuthStartOptions = {
 
 const server: Koa<DefaultState, DefaultContext> = new Koa();
 
-server.keys = [process.env.SHOPIFY_API_SECRET_KEY ?? ''];
-
 app.prepare().then(() => {
   server.use(session({ secure: true, sameSite: 'none' }, server));
+  server.keys = [process.env.SHOPIFY_API_SECRET_KEY ?? ''];
   server.use(createShopifyAuth(authConfig));
   server.use(graphQLProxy({ version: ApiVersion.October20 }));
   server.use(verifyRequest());
