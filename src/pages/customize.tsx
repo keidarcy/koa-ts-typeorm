@@ -9,9 +9,12 @@ import {
   TextField
 } from '@shopify/polaris';
 import React, { useCallback, useState } from 'react';
+import { ChromePicker } from 'react-color';
+import { VaniColorPicker } from '../components/Home/VaniColorPicker';
 
 const Customize: React.FC = () => {
   const [checked, setChecked] = useState(false);
+  const [color, setColor] = useState('#67c61e');
   const handleChange = useCallback((newChecked) => setChecked(newChecked), []);
   const [textFieldValue, setTextFieldValue] = useState('1');
 
@@ -25,6 +28,13 @@ const Customize: React.FC = () => {
     { title: 'Show Variants information', isOn: true },
     { title: 'Show Variants information', isOn: true }
   ];
+
+  const colors = [
+    { title: 'Add to Cart button color', color },
+    { title: 'Recommendation Title color', color },
+    { title: 'Product Name / Price color', color }
+  ];
+
   return (
     <>
       <Layout.Section oneHalf>
@@ -32,6 +42,12 @@ const Customize: React.FC = () => {
           <Card.Section>
             <FormLayout>
               <TextField type="email" label="Add to Cart text" onChange={() => {}} />
+              {colors.map((color) => (
+                <Stack>
+                  <Stack.Item fill>{color.title}</Stack.Item>
+                  <VaniColorPicker color={color.color} setColor={setColor} />
+                </Stack>
+              ))}
               {checkboxes.map((check) => (
                 <Stack>
                   <Stack.Item fill>{check.title}</Stack.Item>
