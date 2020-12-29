@@ -4,3 +4,4 @@ node_modules
 npm-debug.log
 .prettierrc
 docker/nginx/secure/*.pem
+.vscode

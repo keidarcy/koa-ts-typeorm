@@ -4,7 +4,7 @@ import { Redirect } from '@shopify/app-bridge/actions';
 import Router, { useRouter } from 'next/router';
 import { useEffect, useContext } from 'react';
 
-const RoutePropagator = () => {
+const VaniRoutePropagator = () => {
   const router = useRouter();
   const { route } = router;
   const appBridge = useContext(AppBridgeContext);
@@ -20,4 +20,4 @@ const RoutePropagator = () => {
   ) : null;
 };
 
-export default RoutePropagator;
+export default VaniRoutePropagator;

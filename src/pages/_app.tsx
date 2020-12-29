@@ -4,14 +4,17 @@ import type { AppProps, AppContext } from 'next/app';
 import { useRouter } from 'next/router';
 import { IncomingMessage } from 'http';
 import '@shopify/polaris/dist/styles.css';
-import { AppProvider, FooterHelp, Link } from '@shopify/polaris';
+import { AppProvider, FooterHelp, Frame, Link } from '@shopify/polaris';
 import { Provider } from '@shopify/app-bridge-react';
 import translations from '@shopify/polaris/locales/en.json';
-import { TitleBar } from '@shopify/app-bridge-react';
-import ClientRouter from '../components/ClientRouter';
-import RoutePropagator from '../components/RoutePropagator';
-import { useEffect } from 'react';
+import VaniClientRouter from '../components/Layouts/VaniClientRouter';
+import VaniRoutePropagator from '../components/Layouts/VaniRoutePropagator';
+import React, { useEffect, useState } from 'react';
 import { initApp } from '../utils/front.helper';
+import t from '../utils/en.json';
+import { VaniTitleBar } from '../components/Layouts/VaniTitleBar';
+import { VaniFooter } from '../components/Layouts/VaniFooter';
+import { VaniFrame } from '../components/Layouts/VaniFrame';
 
 interface MyAppInterface extends AppProps {
   shopOrigin: string;
@@ -20,7 +23,7 @@ interface MyAppInterface extends AppProps {
 const MyApp = ({ Component, pageProps, shopOrigin }: MyAppInterface) => {
   //@ts-expect-errorts
   const config = { apiKey: API_KEY, shopOrigin, forceRedirect: false };
-  const router = useRouter();
+  const [state, setstate] = useState(true);
 
   useEffect(() => {
     initApp();
@@ -29,32 +32,18 @@ const MyApp = ({ Component, pageProps, shopOrigin }: MyAppInterface) => {
   return (
     <>
       <Head>
-        <title>Sample App</title>
+        <title>{t.title}</title>
         <meta charSet="utf-8" />
       </Head>
       <Provider config={config}>
-        <ClientRouter />
-        <RoutePropagator />
-        <AppProvider i18n={translations}>
-          <TitleBar
-            title=""
-            secondaryActions={[
-              {
-                content: 'index',
-                onAction: () => router.push('/')
-              },
-              {
-                content: 'router test',
-                onAction: () => router.push('/test')
-              }
-            ]}
-          />
-          <Component {...pageProps} />
-          <FooterHelp>
-            <Link url="https://github.com/keidarcy" external>
-              お問い合わせ
-            </Link>
-          </FooterHelp>
+        <VaniClientRouter />
+        <VaniRoutePropagator />
+        <AppProvider i18n={translations} features={{ newDesignLanguage: true }}>
+          <VaniTitleBar />
+          <VaniFrame state={state} setState={setstate}>
+            <Component {...pageProps} />
+          </VaniFrame>
+          <VaniFooter />
         </AppProvider>
       </Provider>
     </>
