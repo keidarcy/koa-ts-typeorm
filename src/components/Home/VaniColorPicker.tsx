@@ -1,21 +1,24 @@
-import { Button, Popover } from '@shopify/polaris';
-import React, { useCallback, useState } from 'react';
+import { Popover } from '@shopify/polaris';
+import React, { useCallback, useContext, useState } from 'react';
 import ChromePicker from 'react-color/lib/components/chrome/Chrome';
+import { VaniContext } from '../../utils/contexts/VCScontext';
+import { VaniActionEnum } from '../../utils/type.helper';
 
 interface VaniColorPickerProps {
   color: string;
-  setColor: React.Dispatch<React.SetStateAction<string>>;
+  field: string;
 }
 
-export const VaniColorPicker: React.FC<VaniColorPickerProps> = ({ color, setColor }) => {
-  const [popoverActive, setPopoverActive] = useState(true);
+export const VaniColorPicker: React.FC<VaniColorPickerProps> = ({ color, field }) => {
+  const [popoverActive, setPopoverActive] = useState(false);
+  const { dispatch } = useContext(VaniContext);
 
   const togglePopoverActive = useCallback(
     () => setPopoverActive((popoverActive) => !popoverActive),
     []
   );
 
-  const style = {
+  const colorStyle = {
     width: '2rem',
     height: '2rem',
     backgroundColor: color,
@@ -23,12 +26,17 @@ export const VaniColorPicker: React.FC<VaniColorPickerProps> = ({ color, setColo
     borderRadius: '5px'
   };
 
-  const activator = <div onClick={togglePopoverActive} style={style} />;
+  const activator = <div onClick={togglePopoverActive} style={colorStyle} />;
 
   return (
     <>
       <Popover active={popoverActive} activator={activator} onClose={togglePopoverActive}>
-        <ChromePicker color={color} onChangeComplete={({ hex }) => setColor(hex)} />
+        <ChromePicker
+          color={color}
+          onChangeComplete={({ hex }) =>
+            dispatch({ type: VaniActionEnum.CHANGE_CUSTOMIZE_VALUE, field, value: hex })
+          }
+        />
       </Popover>
     </>
   );

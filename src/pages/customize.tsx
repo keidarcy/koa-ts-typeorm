@@ -8,31 +8,49 @@ import {
   Stack,
   TextField
 } from '@shopify/polaris';
-import React, { useCallback, useState } from 'react';
-import { ChromePicker } from 'react-color';
+import React, { useContext } from 'react';
 import { VaniColorPicker } from '../components/Home/VaniColorPicker';
+import { VaniContext } from '../utils/contexts/VCScontext';
+import { VaniActionEnum } from '../utils/type.helper';
 
 const Customize: React.FC = () => {
-  const [checked, setChecked] = useState(false);
-  const [color, setColor] = useState('#67c61e');
-  const handleChange = useCallback((newChecked) => setChecked(newChecked), []);
-  const [textFieldValue, setTextFieldValue] = useState('1');
-
-  const handleTextFieldChange = useCallback((value) => setTextFieldValue(value), []);
+  const { state, dispatch } = useContext(VaniContext);
   const checkboxes = [
-    { title: 'Show Variants information', isOn: true },
-    { title: 'Show Price information', isOn: true },
-    { title: 'Crop Product images', isOn: true },
-    { title: 'Enable Slideshow animation', isOn: true },
-    { title: 'Enable Zoom effect', isOn: true },
-    { title: 'Show Variants information', isOn: true },
-    { title: 'Show Variants information', isOn: true }
+    { title: 'Show Add to Cart', isOn: state.customize.showCart, field: 'showCart' },
+    {
+      title: 'Show Variants information',
+      isOn: state.customize.showVariant,
+      field: 'showVariant'
+    },
+    {
+      title: 'Show Price information',
+      isOn: state.customize.showPrice,
+      field: 'showPrice'
+    },
+    { title: 'Crop Product images', isOn: state.customize.cropImage, field: 'cropImage' },
+    {
+      title: 'Enable Slideshow animation',
+      isOn: state.customize.enableSlideshow,
+      field: 'enableSlideshow'
+    }
   ];
 
   const colors = [
-    { title: 'Add to Cart button color', color },
-    { title: 'Recommendation Title color', color },
-    { title: 'Product Name / Price color', color }
+    {
+      title: 'Add to Cart button color',
+      color: state.customize.cartColor,
+      field: 'cartColor'
+    },
+    {
+      title: 'Recommendation Title color',
+      color: state.customize.titleColor,
+      field: 'titleColor'
+    },
+    {
+      title: 'Product Name / Price color',
+      color: state.customize.productNameColor,
+      field: 'productNameColor'
+    }
   ];
 
   return (
@@ -41,20 +59,26 @@ const Customize: React.FC = () => {
         <Card title="Staff accounts">
           <Card.Section>
             <FormLayout>
-              <TextField type="email" label="Add to Cart text" onChange={() => {}} />
               {colors.map((color) => (
                 <Stack>
                   <Stack.Item fill>{color.title}</Stack.Item>
-                  <VaniColorPicker color={color.color} setColor={setColor} />
+                  <VaniColorPicker color={color.color} field={color.field} />
                 </Stack>
               ))}
               {checkboxes.map((check) => (
-                <Stack>
+                <Stack key={check.title}>
                   <Stack.Item fill>{check.title}</Stack.Item>
                   <Checkbox
                     label="Basic checkbox"
+                    labelHidden
                     checked={check.isOn}
-                    onChange={handleChange}
+                    onChange={(value) =>
+                      dispatch({
+                        type: VaniActionEnum.CHANGE_CUSTOMIZE_VALUE,
+                        field: check.field,
+                        value
+                      })
+                    }
                   />
                 </Stack>
               ))}

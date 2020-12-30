@@ -1,23 +1,72 @@
 import { ContextualSaveBar } from '@shopify/polaris';
-import React from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { VaniContext } from '../../utils/contexts/VCScontext';
+import { VaniActionEnum } from '../../utils/type.helper';
+import { Customize } from '@prisma/client';
+import axios from 'axios';
 
-interface VaniSaveBarProps {}
+export const VaniSaveBar: React.FC = () => {
+  const { state, dispatch } = useContext(VaniContext);
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-export const VaniSaveBar: React.FC<VaniSaveBarProps> = ({}) => {
+  const stateRef = useRef<Customize | undefined>(undefined);
+
+  const handleSubmit = useCallback(() => {
+    setLoading(true);
+    const fn = async () => {
+      try {
+        const { data } = await axios.put('/api/customizes', state.customize);
+        stateRef.current = data;
+        dispatch({
+          type: VaniActionEnum.SET_API_VALUES,
+          customize: stateRef.current
+        });
+        setLoading(false);
+      } catch (err) {
+        console.log(err.message);
+        setLoading(false);
+      }
+    };
+    fn();
+  }, [state]);
+
+  useEffect(() => {
+    if (state.customize?.shop && !stateRef.current) {
+      stateRef.current = state.customize;
+    }
+    if (JSON.stringify(stateRef.current) === JSON.stringify(state.customize)) {
+      setShow(false);
+    } else {
+      setShow(true);
+    }
+    console.log(JSON.stringify(stateRef.current) === JSON.stringify(state.customize));
+  }, [state]);
+
   return (
     <>
-      <ContextualSaveBar
-        alignContentFlush
-        message="Unsaved changes"
-        saveAction={{
-          onAction: () => console.log('add form submit logic'),
-          loading: true
-        }}
-        discardAction={{
-          onAction: () => console.log('add clear form logic')
-        }}
-      />
-      <div style={{ marginTop: '5rem' }} />
+      {show && (
+        <>
+          <ContextualSaveBar
+            alignContentFlush
+            message="Unsaved changes"
+            saveAction={{
+              onAction: handleSubmit,
+              loading
+            }}
+            discardAction={{
+              onAction: () => {
+                dispatch({
+                  type: VaniActionEnum.SET_API_VALUES,
+                  customize: stateRef.current
+                });
+                setShow(false);
+              }
+            }}
+          />
+          <div style={{ marginTop: '8rem' }} />
+        </>
+      )}
     </>
   );
 };

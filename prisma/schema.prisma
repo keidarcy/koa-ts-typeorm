@@ -7,11 +7,43 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
 }
 
-model Post {
-  id      Int    @id @default(autoincrement())
-  title   String
-  excerpt String
+model User {
+  id        Int        @id @default(autoincrement())
+  shop      String     @unique
+  customize Customize?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+  deletedAt DateTime?
+
+  @@index([shop])
+}
+
+model Customize {
+  id                     Int       @id @default(autoincrement())
+  shop                   String    @unique
+  user                   User      @relation(fields: [shop], references: [shop])
+  newestProducts         Boolean   @default(false)
+  recentlyViewedProducts Boolean   @default(false)
+  bestSellingProducts    Boolean   @default(false)
+  recommendedProducts    Boolean   @default(false)
+  npTitle                String?   @default("Newest Products")
+  rvpTitle               String?   @default("Recently Viewed Products")
+  bspTitle               String?   @default("Best Selling Products")
+  rpTitle                String?   @default("Recommended Products")
+  showCart               Boolean   @default(true)
+  enableSlideshow        Boolean   @default(true)
+  showVariant            Boolean   @default(true)
+  showPrice              Boolean   @default(true)
+  cropImage              Boolean   @default(true)
+  cartText               String?   @default("Add to cart")
+  cartColor              String    @default("#86b463")
+  titleColor             String    @default("#333333")
+  productNameColor       String    @default("#ffffff")
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @default(now()) @updatedAt
+  deletedAt              DateTime?
 }

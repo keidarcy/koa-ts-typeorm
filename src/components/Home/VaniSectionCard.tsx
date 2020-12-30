@@ -7,31 +7,46 @@ import {
   Stack,
   TextField
 } from '@shopify/polaris';
-import { useCallback, useState } from 'react';
+import { useCallback, useContext } from 'react';
+import { VaniContext } from '../../utils/contexts/VCScontext';
+import { VaniActionEnum } from '../../utils/type.helper';
 
 interface VaniSectionCardProps {
-  title: string;
+  active: boolean;
+  name: string;
   description: string;
   pages: string[];
-  showPreview: boolean;
   defaultTitle: string;
   previewUrl: string;
+  title: string;
+  toogleField: string;
+  titleField: string;
 }
 
 export const VaniSectionCard: React.FC<VaniSectionCardProps> = ({
-  title,
+  active,
+  name,
   description,
   pages,
-  showPreview,
   defaultTitle,
-  previewUrl
+  previewUrl,
+  title,
+  toogleField,
+  titleField
 }) => {
-  const [active, setActive] = useState(false);
-
-  const handleToggle = useCallback(() => setActive((active) => !active), []);
-
   const contentStatus = active ? 'Disable' : 'Enable';
-  const textStatus = active ? 'enabled' : 'disabled';
+
+  const { dispatch } = useContext(VaniContext);
+
+  const handleChange = useCallback(
+    (value) =>
+      dispatch({
+        type: VaniActionEnum.CHANGE_CUSTOMIZE_VALUE,
+        field: titleField,
+        value
+      }),
+    []
+  );
 
   return (
     <>
@@ -41,24 +56,30 @@ export const VaniSectionCard: React.FC<VaniSectionCardProps> = ({
             <SettingToggle
               action={{
                 content: contentStatus,
-                onAction: handleToggle
+                onAction: () => {
+                  dispatch({
+                    type: VaniActionEnum.CHANGE_CUSTOMIZE_VALUE,
+                    field: toogleField,
+                    value: !active
+                  });
+                }
               }}
               enabled={active}
             >
-              <Heading>{title}</Heading>
+              <Heading>{name}</Heading>
               <p>{description}</p>
             </SettingToggle>
           </Card.Section>
           <Card.Section subdued={!active}>
             <Stack alignment="center" distribution="fill">
-              <Heading>Title show in front page</Heading>
+              <Heading>Title</Heading>
               <TextField
-                label={title}
+                label={name}
                 labelHidden
                 disabled={!active}
-                value={`default text ${defaultTitle}`}
-                onChange={() => {}}
-                helpText={defaultTitle}
+                value={title}
+                onChange={handleChange}
+                placeholder={defaultTitle}
                 align="left"
               />
             </Stack>
@@ -66,9 +87,11 @@ export const VaniSectionCard: React.FC<VaniSectionCardProps> = ({
           <Card.Section subdued={!active}>
             <Stack alignment="center" distribution="equalSpacing">
               <p>Shows on the following pages: {pages.join(',')}</p>
-              <Link url={previewUrl} external>
-                preview
-              </Link>
+              {previewUrl && (
+                <Link url={previewUrl} external>
+                  preview
+                </Link>
+              )}
             </Stack>
           </Card.Section>
         </Card>

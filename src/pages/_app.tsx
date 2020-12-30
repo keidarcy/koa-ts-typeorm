@@ -14,7 +14,7 @@ import { initApp } from '../utils/front.helper';
 import t from '../utils/en.json';
 import { VaniTitleBar } from '../components/Layouts/VaniTitleBar';
 import { VaniFooter } from '../components/Layouts/VaniFooter';
-import { VaniFrame } from '../components/Layouts/VaniFrame';
+import { VaniProvider } from '../components/Layouts/VaniProvider';
 
 interface MyAppInterface extends AppProps {
   shopOrigin: string;
@@ -23,7 +23,6 @@ interface MyAppInterface extends AppProps {
 const MyApp = ({ Component, pageProps, shopOrigin }: MyAppInterface) => {
   //@ts-expect-errorts
   const config = { apiKey: API_KEY, shopOrigin, forceRedirect: false };
-  const [state, setstate] = useState(true);
 
   useEffect(() => {
     initApp();
@@ -40,9 +39,9 @@ const MyApp = ({ Component, pageProps, shopOrigin }: MyAppInterface) => {
         <VaniRoutePropagator />
         <AppProvider i18n={translations} features={{ newDesignLanguage: true }}>
           <VaniTitleBar />
-          <VaniFrame state={state} setState={setstate}>
+          <VaniProvider>
             <Component {...pageProps} />
-          </VaniFrame>
+          </VaniProvider>
           <VaniFooter />
         </AppProvider>
       </Provider>

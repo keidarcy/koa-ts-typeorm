@@ -13,6 +13,7 @@ export const addContext = async (ctx: DefaultContext, next: Next) => {
       }
     }
   );
+  ctx.req.shop = shop;
   ctx.req.GraphQLClient = client;
   await next();
 };
