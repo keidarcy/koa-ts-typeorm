@@ -53,51 +53,7 @@ const Customize: React.FC = () => {
     }
   ];
 
-  return (
-    <>
-      <Layout.Section oneHalf>
-        <Card title="Staff accounts">
-          <Card.Section>
-            <FormLayout>
-              {colors.map((color) => (
-                <Stack>
-                  <Stack.Item fill>{color.title}</Stack.Item>
-                  <VaniColorPicker color={color.color} field={color.field} />
-                </Stack>
-              ))}
-              {checkboxes.map((check) => (
-                <Stack key={check.title}>
-                  <Stack.Item fill>{check.title}</Stack.Item>
-                  <Checkbox
-                    label="Basic checkbox"
-                    labelHidden
-                    checked={check.isOn}
-                    onChange={(value) =>
-                      dispatch({
-                        type: VaniActionEnum.CHANGE_CUSTOMIZE_VALUE,
-                        field: check.field,
-                        value
-                      })
-                    }
-                  />
-                </Stack>
-              ))}
-            </FormLayout>
-          </Card.Section>
-        </Card>
-      </Layout.Section>
-      <Layout.Section oneHalf>
-        <Card title="Staff accounts">
-          <Card.Section>
-            <List>
-              <List.Item>Felix Crafford</List.Item>
-              <List.Item>Ezequiel Manno</List.Item>
-            </List>
-          </Card.Section>
-        </Card>
-      </Layout.Section>
-    </>
-  );
+  return <></>;
 };
 
 export default Customize;

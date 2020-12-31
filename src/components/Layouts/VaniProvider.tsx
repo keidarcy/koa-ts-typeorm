@@ -21,9 +21,7 @@ export const VaniProvider: React.FC<VaniProviderProps> = ({ children }) => {
       <QueryClientProvider client={queryClient}>
         <VaniContextProvider>
           <VaniSaveBar />
-          <Page>
-            <Layout>{children}</Layout>
-          </Page>
+          <Page>{children}</Page>
         </VaniContextProvider>
         <ReactQueryDevtools initialIsOpen />
       </QueryClientProvider>
