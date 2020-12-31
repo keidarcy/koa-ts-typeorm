@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
-import { Customize, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { gql, GraphQLClient } from 'graphql-request';
 
 const handler = nc<NextApiRequest, NextApiResponse>();
 
@@ -8,6 +9,7 @@ const prisma = new PrismaClient();
 
 interface ExtendedRequest {
   shop: string;
+  GraphQLClient: GraphQLClient;
 }
 interface ExtendedResponse {
   cookie: (name: string, value: string) => void;
@@ -17,7 +19,26 @@ handler.get<ExtendedRequest, ExtendedResponse>(async (req, res) => {
   const customize = await prisma.customize.findUnique({
     where: { shop: req.shop }
   });
-  res.json(customize);
+
+  const query = gql`
+    query {
+      shop {
+        id
+        primaryDomain {
+          host
+          sslEnabled
+          url
+        }
+        description
+        paymentSettings {
+          supportedDigitalWallets
+        }
+      }
+    }
+  `;
+  const shopify = await req.GraphQLClient.request(query);
+
+  res.json({ customize, shopify });
 });
 
 handler.put<ExtendedRequest, ExtendedResponse>(async (req, res) => {

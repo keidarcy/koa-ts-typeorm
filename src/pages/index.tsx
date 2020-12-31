@@ -1,14 +1,13 @@
 import { Banner, Card, Layout, Page, FormLayout } from '@shopify/polaris';
-import axios from 'axios';
 import React, { useContext, useEffect } from 'react';
 import { CustomizeArea } from '../components/Home/CustomizeArea';
 import { VaniSectionCard } from '../components/Home/VaniSectionCard';
 import { VaniContext } from '../utils/contexts/VCScontext';
-import useCustomize from '../utils/hooks/useCustomize';
+import useCustomizeQuery from '../utils/hooks/useCustomizeQuery';
 import { VaniActionEnum } from '../utils/type.helper';
 
 const Index: React.FC = (): JSX.Element => {
-  const { status, data: customize, error, isFetching } = useCustomize();
+  const { status, data: customize, error, isFetching } = useCustomizeQuery();
   const { state, dispatch } = useContext(VaniContext);
   useEffect(() => {
     console.log({ customize });
