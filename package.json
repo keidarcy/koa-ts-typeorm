@@ -20,6 +20,7 @@
     "dotenv": "^8.2.0",
     "graphql": "^15.4.0",
     "graphql-request": "^3.4.0",
+    "graphql.macro": "^1.4.2",
     "isomorphic-fetch": "^3.0.0",
     "koa": "^2.13.0",
     "koa-session": "^6.1.0",
