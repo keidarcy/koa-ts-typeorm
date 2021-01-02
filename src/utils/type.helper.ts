@@ -18,7 +18,11 @@ export interface Feature {
 }
 
 export type VaniActions =
-  | { type: VaniActionEnum.SET_API_VALUES; customize: Customize }
+  | {
+      type: VaniActionEnum.SET_API_VALUES;
+      customize: Customize;
+      product: ProductInterface;
+    }
   | {
       type: VaniActionEnum.CHANGE_CUSTOMIZE_VALUE;
       field: string;
@@ -29,3 +33,17 @@ export type VaniActions =
       field: string;
       value: string | number | undefined | boolean | null;
     };
+
+export interface ProductInterface {
+  title: string;
+  vendor: string;
+  images: string[];
+  options: [
+    {
+      name: string;
+      position: number;
+      values: string[];
+    }
+  ];
+  hasOnlyDefaultVariant: boolean;
+}

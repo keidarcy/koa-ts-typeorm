@@ -1,4 +1,4 @@
-import { Feature, VaniActions, VaniActionEnum } from '../type.helper';
+import { VaniActions, VaniActionEnum } from '../type.helper';
 import { Customize } from '@prisma/client';
 
 const initCustomize: Customize = {
@@ -26,8 +26,23 @@ const initCustomize: Customize = {
   deletedAt: null
 };
 
+const initProductValue = {
+  title: '',
+  vendor: '',
+  images: [''],
+  options: [
+    {
+      name: '',
+      position: 1,
+      values: ['']
+    }
+  ],
+  hasOnlyDefaultVariant: true
+};
+
 export const initVaniState = {
-  customize: initCustomize
+  customize: initCustomize,
+  product: initProductValue
 };
 
 export type VaniStateType = typeof initVaniState;
@@ -35,7 +50,7 @@ export type VaniStateType = typeof initVaniState;
 export const reducer = (state: VaniStateType, action: VaniActions): VaniStateType => {
   switch (action.type) {
     case VaniActionEnum.SET_API_VALUES:
-      return { ...state, customize: action.customize };
+      return { ...state, customize: action.customize, product: action.product };
     case VaniActionEnum.CHANGE_CUSTOMIZE_VALUE:
       return {
         ...state,

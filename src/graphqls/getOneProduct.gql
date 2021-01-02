@@ -1,0 +1,37 @@
+query getOneProduct {
+  products(first: 1) {
+    edges {
+      node {
+        title
+        vendor
+        images(first: 2) {
+          edges {
+            node {
+              originalSrc
+            }
+          }
+        }
+        options {
+          name
+          position
+          values
+        }
+        totalVariants
+        hasOnlyDefaultVariant
+        variants(first: 100) {
+          edges {
+            node {
+              availableForSale
+              price
+              compareAtPrice
+              title
+              image {
+                originalSrc
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

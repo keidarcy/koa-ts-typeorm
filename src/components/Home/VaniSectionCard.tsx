@@ -50,7 +50,7 @@ export const VaniSectionCard: React.FC<VaniSectionCardProps> = ({
 
   return (
     <>
-      <Layout.Section oneHalf>
+      <Layout.Section>
         <Card>
           <Card.Section>
             <SettingToggle

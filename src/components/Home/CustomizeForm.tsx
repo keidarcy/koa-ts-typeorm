@@ -57,12 +57,12 @@ export const CustomizeForm = () => {
     }
   ];
   return (
-    <Layout.Section>
+    <Layout.Section oneHalf>
       <Card title="Staff accounts">
         <Card.Section>
           <FormLayout>
             {colors.map((color) => (
-              <Stack>
+              <Stack key={color.color}>
                 <Stack.Item fill>{color.title}</Stack.Item>
                 <VaniColorPicker color={color.color} field={color.field} />
               </Stack>

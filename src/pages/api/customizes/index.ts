@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 import { PrismaClient } from '@prisma/client';
-import { gql, GraphQLClient } from 'graphql-request';
+import { GraphQLClient } from 'graphql-request';
+import { loader } from 'graphql.macro';
+import { ProductHelper } from '../../../controllers/Product';
 
 const handler = nc<NextApiRequest, NextApiResponse>();
 
@@ -20,25 +22,12 @@ handler.get<ExtendedRequest, ExtendedResponse>(async (req, res) => {
     where: { shop: req.shop }
   });
 
-  const query = gql`
-    query {
-      shop {
-        id
-        primaryDomain {
-          host
-          sslEnabled
-          url
-        }
-        description
-        paymentSettings {
-          supportedDigitalWallets
-        }
-      }
-    }
-  `;
-  const shopify = await req.GraphQLClient.request(query);
+  const query = loader('../../../graphqls/getOneProduct.gql');
+  const result = await req.GraphQLClient.request(query);
 
-  res.json({ customize, shopify });
+  const product = ProductHelper.formatShopifyProduct(result.products.edges[0].node);
+
+  res.json({ customize, product });
 });
 
 handler.put<ExtendedRequest, ExtendedResponse>(async (req, res) => {
