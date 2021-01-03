@@ -11,3 +11,61 @@ const loadTawk = () => {
 export const initApp = () => {
   loadTawk();
 };
+
+interface optionInterface extends DOMStringMap {
+  price: string;
+  compareAtPrice: string;
+  availble: string;
+}
+
+export const selectVariant = () => {
+  const select1 = document.querySelector('.js-vcs-option-0') as HTMLSelectElement | null;
+  const select2 = document.querySelector('.js-vcs-option-1') as HTMLSelectElement | null;
+  const select3 = document.querySelector('.js-vcs-option-2') as HTMLSelectElement | null;
+  const price = document.querySelector('.js-vcs-price-1');
+  const compareAtPrice = document.querySelector('.js-vcs-compare-price-1');
+  const variantSelect = document.querySelector(
+    '.js-vcs-variant-select'
+  ) as HTMLSelectElement;
+
+  const selectVariantOption = (fullTitle) => {
+    Array.from(variantSelect.children).forEach((option, index) => {
+      if (option.innerHTML === fullTitle) {
+        variantSelect.value = (variantSelect.children[index] as HTMLOptionElement).value;
+        const data = option.dataset as optionInterface;
+        price.innerHTML = data.price;
+        compareAtPrice.innerHTML = data.compareatprice;
+      }
+    });
+  };
+
+  if (select1) {
+    select1.addEventListener('change', () => {
+      const option1 = select1.value;
+      const option2 = select2 ? ' / ' + select2.value : '';
+      const option3 = select3 ? ' / ' + select3.value : '';
+      const fullTitle = option1 + option2 + option3;
+      selectVariantOption(fullTitle);
+    });
+  }
+
+  if (select2) {
+    select2.addEventListener('change', () => {
+      const option1 = select1.value;
+      const option2 = ' / ' + select2.value;
+      const option3 = select3 ? ' / ' + select3.value : '';
+      const fullTitle = option1 + option2 + option3;
+      selectVariantOption(fullTitle);
+    });
+  }
+
+  if (select3) {
+    select3.addEventListener('change', () => {
+      const option1 = select1.value;
+      const option2 = ' / ' + select2.value;
+      const option3 = ' / ' + select3.value;
+      const fullTitle = option1 + option2 + option3;
+      selectVariantOption(fullTitle);
+    });
+  }
+};

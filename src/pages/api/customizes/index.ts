@@ -3,7 +3,7 @@ import nc from 'next-connect';
 import { PrismaClient } from '@prisma/client';
 import { GraphQLClient } from 'graphql-request';
 import { loader } from 'graphql.macro';
-import { ProductHelper } from '../../../controllers/Product';
+import Product from '../../../controllers/Product';
 
 const handler = nc<NextApiRequest, NextApiResponse>();
 
@@ -18,13 +18,17 @@ interface ExtendedResponse {
 }
 
 handler.get<ExtendedRequest, ExtendedResponse>(async (req, res) => {
+  const shop = req.shop;
   const customize = await prisma.customize.findUnique({
-    where: { shop: req.shop }
+    where: { shop }
   });
 
   const query = loader('../../../graphqls/getOneProduct.gql');
   const result = await req.GraphQLClient.request(query);
 
+  console.log({ result: JSON.stringify(result) });
+
+  const ProductHelper = new Product(shop, result.shop.currencyCode);
   const product = ProductHelper.formatShopifyProduct(result.products.edges[0].node);
 
   res.json({ customize, product });

@@ -4,6 +4,8 @@ query getOneProduct {
       node {
         title
         vendor
+        handle
+        onlineStorePreviewUrl
         images(first: 2) {
           edges {
             node {
@@ -25,6 +27,11 @@ query getOneProduct {
               price
               compareAtPrice
               title
+              id
+              selectedOptions {
+                name
+                value
+              }
               image {
                 originalSrc
               }
@@ -33,5 +40,8 @@ query getOneProduct {
         }
       }
     }
+  }
+  shop {
+    currencyCode
   }
 }

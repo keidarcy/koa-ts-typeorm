@@ -1,4 +1,4 @@
-import { VaniActions, VaniActionEnum } from '../type.helper';
+import { VaniActions, VaniActionEnum, ProductInterface } from '../type.helper';
 import { Customize } from '@prisma/client';
 
 const initCustomize: Customize = {
@@ -26,15 +26,30 @@ const initCustomize: Customize = {
   deletedAt: null
 };
 
-const initProductValue = {
+const initProductValue: ProductInterface = {
   title: '',
   vendor: '',
+  url: '',
   images: [''],
   options: [
     {
       name: '',
       position: 1,
       values: ['']
+    }
+  ],
+  price: '',
+  compareAtPrice: '',
+  variants: [
+    {
+      availble: true,
+      compareAtPrice: '',
+      id: '',
+      price: '',
+      title: '',
+      option1: '',
+      option2: '',
+      option3: ''
     }
   ],
   hasOnlyDefaultVariant: true

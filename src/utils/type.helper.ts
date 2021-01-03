@@ -34,9 +34,23 @@ export type VaniActions =
       value: string | number | undefined | boolean | null;
     };
 
+export interface VariantInterface {
+  availble: boolean;
+  price: string;
+  compareAtPrice: string;
+  id: string;
+  title: string;
+  option1: string | null;
+  option2: string | null;
+  option3: string | null;
+}
+
 export interface ProductInterface {
   title: string;
   vendor: string;
+  url: string;
+  price: string;
+  compareAtPrice: string;
   images: string[];
   options: [
     {
@@ -46,4 +60,5 @@ export interface ProductInterface {
     }
   ];
   hasOnlyDefaultVariant: boolean;
+  variants: VariantInterface[];
 }

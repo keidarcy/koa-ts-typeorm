@@ -1,13 +1,4 @@
-import {
-  Card,
-  Checkbox,
-  FormLayout,
-  Layout,
-  List,
-  Page,
-  Stack,
-  TextField
-} from '@shopify/polaris';
+import { Card, Checkbox, FormLayout, Layout, Stack } from '@shopify/polaris';
 import React, { useContext } from 'react';
 import { VaniColorPicker } from './/VaniColorPicker';
 import { VaniContext } from '../../utils/contexts/VCScontext';
