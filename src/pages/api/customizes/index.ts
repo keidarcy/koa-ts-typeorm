@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Customize } from '@prisma/client';
 import { loader } from 'graphql.macro';
 import Product from '../../../controllers/Product';
 import Shopify from 'shopify-api-node';
+import { CustomizeService } from '../../../controllers/Customize.service';
 
 const handler = nc<NextApiRequest, NextApiResponse>();
 
@@ -13,6 +14,7 @@ interface ExtendedRequest {
   shop: string;
   shopify: Shopify;
 }
+
 interface ExtendedResponse {
   cookie: (name: string, value: string) => void;
 }
@@ -32,53 +34,49 @@ handler.get<ExtendedRequest, ExtendedResponse>(async (req, res) => {
   res.json({ customize, product });
 });
 
-handler.put<ExtendedRequest, ExtendedResponse>(async (req, res) => {
-  const {
-    newestProducts,
-    recentlyViewedProducts,
-    bestSellingProducts,
-    recommendedProducts,
-    npTitle,
-    rvpTitle,
-    bspTitle,
-    rpTitle,
-    showCart,
-    enableSlideshow,
-    showVariant,
-    showPrice,
-    cropImage,
-    cartText,
-    cartColor,
-    titleColor,
-    productNameColor
-  } = req.body;
+interface ExtendedPutRequest extends ExtendedRequest {
+  body: Customize;
+}
 
-  const { shopify } = req;
-  shopify.theme.list();
-  // TODO: add liquid assets manipulation here
+handler.put<ExtendedPutRequest, ExtendedResponse>(async (req, res) => {
+  const updatedCustomize = req.body as Customize;
 
-  const data = await prisma.customize.update({
-    where: { shop: req.shop },
-    data: {
-      newestProducts,
-      recentlyViewedProducts,
-      bestSellingProducts,
-      recommendedProducts,
-      npTitle,
-      rvpTitle,
-      bspTitle,
-      rpTitle,
-      showCart,
-      enableSlideshow,
-      showVariant,
-      showPrice,
-      cropImage,
-      cartText,
-      cartColor,
-      titleColor,
-      productNameColor
+  const { shopify, shop } = req;
+  const themes = await shopify.theme.list();
+  const themeId = themes.find((theme) => theme.role === 'main').id;
+  console.log({ themeId });
+  const ret = await req.shopify.asset.create(themeId, {
+    key: `snippets/vcs.liquid`,
+    value: 'test'
+  });
+  console.log({ ret });
+  const date = new Date();
+  await req.shopify.asset.create(themeId, {
+    key: `layout/vcs_backup_theme_${
+      date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+    }.liquid`,
+    source_key: 'layout/theme.liquid'
+  });
+
+  let themeLiquid = await req.shopify.asset.get(themeId, {
+    asset: {
+      key: 'layout/theme.liquid'
     }
   });
+
+  const newValue = themeLiquid.value.replace(
+    '{{ content_for_layout }}',
+    '\n{{ content_for_layout }}\n{% render "vcs" %}'
+  );
+
+  const rets = await req.shopify.asset.update(themeId, {
+    key: 'layout/theme.liquid',
+    value: newValue
+  });
+  console.log({ rets });
+
+  const customizeService = new CustomizeService(shop, prisma);
+  const data = await customizeService.update(updatedCustomize);
   res.json(data);
 });
 
