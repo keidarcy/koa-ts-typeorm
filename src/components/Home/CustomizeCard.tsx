@@ -16,7 +16,7 @@ export const CustomizeCard = () => {
   return (
     <Layout.Section>
       <div className="vcs-content-container">
-        <p className="vcs-section-title" style={{ color: customize.titleColor }}>
+        <p className="vcs-section-title" style={{ color: customize?.titleColor }}>
           {customize?.bspTitle}
         </p>
         <div id="vcs-card-container" className="vcs-card js-vcs-card">
@@ -34,7 +34,7 @@ export const CustomizeCard = () => {
               />
             </a>
           </div>
-          <div style={{ color: customize.productNameColor }}>
+          <div style={{ color: customize?.productNameColor }}>
             <p className="vcs-title">{product?.title}</p>
             <p className="vcs-title">{product?.vendor}</p>
             {customize?.showPrice && (
@@ -84,8 +84,8 @@ export const CustomizeCard = () => {
             <button
               className="vcs-button js-vcs-button"
               style={{
-                backgroundColor: customize.cartColor,
-                color: customize.productNameColor
+                backgroundColor: customize?.cartColor,
+                color: customize?.productNameColor
               }}
             >
               ADD TO CART
