@@ -42,41 +42,14 @@ handler.put<ExtendedPutRequest, ExtendedResponse>(async (req, res) => {
   const updatedCustomize = req.body as Customize;
 
   const { shopify, shop } = req;
-  const themes = await shopify.theme.list();
-  const themeId = themes.find((theme) => theme.role === 'main').id;
-  console.log({ themeId });
-  const ret = await req.shopify.asset.create(themeId, {
-    key: `snippets/vcs.liquid`,
-    value: 'test'
-  });
-  console.log({ ret });
-  const date = new Date();
-  await req.shopify.asset.create(themeId, {
-    key: `layout/vcs_backup_theme_${
-      date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
-    }.liquid`,
-    source_key: 'layout/theme.liquid'
-  });
 
-  let themeLiquid = await req.shopify.asset.get(themeId, {
-    asset: {
-      key: 'layout/theme.liquid'
-    }
-  });
+  const customizeService = new CustomizeService(shop, prisma, shopify);
 
-  const newValue = themeLiquid.value.replace(
-    '{{ content_for_layout }}',
-    '\n{{ content_for_layout }}\n{% render "vcs" %}'
-  );
+  await customizeService.createNewCollection();
+  await customizeService.createSnippet();
+  await customizeService.modifyAssets();
 
-  const rets = await req.shopify.asset.update(themeId, {
-    key: 'layout/theme.liquid',
-    value: newValue
-  });
-  console.log({ rets });
-
-  const customizeService = new CustomizeService(shop, prisma);
-  const data = await customizeService.update(updatedCustomize);
+  const data = await customizeService.updateAppDB(updatedCustomize);
   res.json(data);
 });
 
