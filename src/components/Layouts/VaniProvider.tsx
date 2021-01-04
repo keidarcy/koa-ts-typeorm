@@ -1,6 +1,6 @@
-import { Frame, Page, Layout } from '@shopify/polaris';
+import { Frame, Page } from '@shopify/polaris';
 import { VaniSaveBar } from './VaniSaveBar';
-import { QueryClient, QueryClientProvider, useQueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { VaniContextProvider } from '../../utils/contexts/VCScontext';
 

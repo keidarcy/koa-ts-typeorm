@@ -46,7 +46,7 @@ export default class Product {
     let compareAtPrice = '';
     shopifyVariants.forEach(({ node: variant }) => {
       const vcsVariant = {
-        availbel: variant.availableForSale,
+        availble: variant.availableForSale,
         title: variant.title,
         price: this.moneyFormatter(variant.price),
         compareAtPrice: this.moneyFormatter(variant.compareAtPrice),

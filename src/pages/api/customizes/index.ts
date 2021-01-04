@@ -55,6 +55,8 @@ handler.put<ExtendedRequest, ExtendedResponse>(async (req, res) => {
     productNameColor
   } = req.body;
 
+  // TODO: add liquid assets manipulation here
+
   const data = await prisma.customize.update({
     where: { shop: req.shop },
     data: {

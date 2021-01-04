@@ -27,16 +27,28 @@ export const selectVariant = () => {
   const variantSelect = document.querySelector(
     '.js-vcs-variant-select'
   ) as HTMLSelectElement;
+  const button = document.querySelector('button.js-vcs-button') as HTMLButtonElement;
 
   const selectVariantOption = (fullTitle) => {
+    let shouldDisable = true;
     Array.from(variantSelect.children).forEach((option, index) => {
       if (option.innerHTML === fullTitle) {
         variantSelect.value = (variantSelect.children[index] as HTMLOptionElement).value;
-        const data = option.dataset as optionInterface;
+        const data = (option as HTMLOptionElement).dataset as optionInterface;
         price.innerHTML = data.price;
         compareAtPrice.innerHTML = data.compareatprice;
+        if (data.availble === 'true') {
+          shouldDisable = false;
+        }
       }
     });
+    if (shouldDisable) {
+      button.disabled = true;
+      button.classList.add('vcs-button-diabled');
+    } else {
+      button.disabled = false;
+      button.classList.remove('vcs-button-diabled');
+    }
   };
 
   if (select1) {
@@ -68,4 +80,26 @@ export const selectVariant = () => {
       selectVariantOption(fullTitle);
     });
   }
+};
+
+export const productCardAnimate = () => {
+  const card = document.querySelector('.js-vcs-card') as HTMLDivElement;
+
+  card.addEventListener('mousemove', (e: MouseEvent) => {
+    const { top, bottom, left, right } = card.getBoundingClientRect();
+    const width = left / 2 + right / 2;
+    const height = top / 2 + bottom / 2;
+    let xAxis = (width - e.pageX) / 20;
+    let yAxis = (height - e.pageY) / 20;
+    card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+  });
+
+  card.addEventListener('mouseenter', () => {
+    card.style.transition = 'none';
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.transition = 'all 0.5s ease';
+    card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+  });
 };

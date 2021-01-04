@@ -16,11 +16,12 @@ export const VaniSaveBar: React.FC = () => {
     setLoading(true);
     const fn = async () => {
       try {
-        const { data } = await axios.put('/api/customizes', state.customize);
+        const { data } = await axios.put<Customize>('/api/customizes', state.customize);
         stateRef.current = data;
         dispatch({
           type: VaniActionEnum.SET_API_VALUES,
-          customize: stateRef.current
+          customize: stateRef.current,
+          product: state.product
         });
         setLoading(false);
       } catch (err) {
