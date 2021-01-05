@@ -62,3 +62,8 @@ export interface ProductInterface {
   hasOnlyDefaultVariant: boolean;
   variants: VariantInterface[];
 }
+
+export enum VCSCollection {
+  bsp = 'bsp',
+  np = 'np'
+}

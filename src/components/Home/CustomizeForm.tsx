@@ -1,11 +1,12 @@
-import { Card, Checkbox, FormLayout, Layout, Stack } from '@shopify/polaris';
-import React, { useContext } from 'react';
+import { Card, Checkbox, FormLayout, Layout, Stack, TextField } from '@shopify/polaris';
+import React, { useCallback, useContext } from 'react';
 import { VaniColorPicker } from './/VaniColorPicker';
 import { VaniContext } from '../../utils/contexts/VCScontext';
 import { VaniActionEnum } from '../../utils/type.helper';
 
 export const CustomizeForm = () => {
   const { state, dispatch } = useContext(VaniContext);
+
   const checkboxes = [
     { title: 'Show Add to Cart', isOn: state.customize?.showCart, field: 'showCart' },
     {
@@ -47,11 +48,39 @@ export const CustomizeForm = () => {
       field: 'productNameColor'
     }
   ];
+
+  const cart = {
+    title: 'Cart',
+    field: 'cartText',
+    default: 'ADD TO CART'
+  };
+
+  const handleChange = useCallback(
+    (value) =>
+      dispatch({
+        type: VaniActionEnum.CHANGE_CUSTOMIZE_VALUE,
+        field: cart.field,
+        value
+      }),
+    []
+  );
+
   return (
     <Layout.Section oneHalf>
-      <Card title="Staff accounts">
+      <Card title="Customize Your Product Card">
         <Card.Section>
           <FormLayout>
+            <Stack>
+              <Stack.Item fill>{cart.title}</Stack.Item>
+              <TextField
+                label={''}
+                labelHidden
+                value={state.customize?.cartText}
+                onChange={handleChange}
+                placeholder={cart.default}
+                align="right"
+              />
+            </Stack>
             {colors.map((color) => (
               <Stack key={color.color}>
                 <Stack.Item fill>{color.title}</Stack.Item>

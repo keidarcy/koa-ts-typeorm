@@ -1,4 +1,4 @@
-import { Card, Layout, List } from '@shopify/polaris';
+import { Layout } from '@shopify/polaris';
 import { useContext, useEffect } from 'react';
 import { VaniContext } from '../../utils/contexts/VCScontext';
 import { productCardAnimate, selectVariant } from '../../utils/front.helper';
@@ -11,10 +11,11 @@ export const CustomizeCard = () => {
   useEffect(() => {
     selectVariant();
     productCardAnimate();
+    // console.log(css.toString());
   }, [product]);
 
   return (
-    <Layout.Section>
+    <Layout.Section key="customize-card">
       <div className="vcs-content-container">
         <p className="vcs-section-title" style={{ color: customize?.titleColor }}>
           {customize?.bspTitle}

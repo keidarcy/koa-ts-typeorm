@@ -1,6 +1,7 @@
 import { Customize, PrismaClient } from '@prisma/client';
 import Shopify from 'shopify-api-node';
-import { bspTemplate } from '../assets/liquidTemplate';
+import { liquidTemplate } from '../assets/assetTemplates';
+import { VCSCollection } from '../utils/type.helper';
 
 export class CustomizeService {
   constructor(
@@ -58,25 +59,55 @@ export class CustomizeService {
     return data;
   }
 
-  async createNewCollection() {
-    const rules = [
+  async createCollection() {
+    const bspResult = await this.shopify.smartCollection.list({
+      title: VCSCollection.bsp
+    });
+    const npResult = await this.shopify.smartCollection.list({ title: VCSCollection.np });
+
+    const hasCreated = bspResult.length + npResult.length === 2;
+
+    if (hasCreated) return;
+
+    const bspRules = [
       {
         column: 'title',
-        condition: 'bsp',
+        condition: VCSCollection.bsp,
         relation: 'equals'
       },
       {
         column: 'title',
-        condition: 'bsp',
+        condition: VCSCollection.bsp,
         relation: 'not_equals'
       }
     ];
+    const npRules = [
+      {
+        column: 'title',
+        condition: VCSCollection.np,
+        relation: 'equals'
+      },
+      {
+        column: 'title',
+        condition: VCSCollection.np,
+        relation: 'not_equals'
+      }
+    ];
+
     try {
       await this.shopify.smartCollection.create({
         disjunctive: true,
-        title: 'bsp',
-        handle: 'bsp',
-        rules
+        title: VCSCollection.bsp,
+        rules: bspRules,
+        published: true,
+        sort_order: 'best-selling'
+      });
+      await this.shopify.smartCollection.create({
+        disjunctive: true,
+        title: VCSCollection.np,
+        rules: npRules,
+        published: true,
+        sort_order: 'created-desc'
       });
     } catch (err) {
       console.log(err.response.body);
@@ -114,11 +145,11 @@ export class CustomizeService {
     await this.findCurrentThemeId();
     await this.shopify.asset.create(this.themeId, {
       key: `snippets/vcs.liquid`,
-      value: bspTemplate
+      value: liquidTemplate
     });
   }
 
-  async findCurrentThemeId() {
+  private async findCurrentThemeId() {
     const themes = await this.shopify.theme.list();
 
     const themeId = themes.find((theme) => theme.role === 'main').id;

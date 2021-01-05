@@ -45,7 +45,7 @@ handler.put<ExtendedPutRequest, ExtendedResponse>(async (req, res) => {
 
   const customizeService = new CustomizeService(shop, prisma, shopify);
 
-  await customizeService.createNewCollection();
+  await customizeService.createCollection();
   await customizeService.createSnippet();
   await customizeService.modifyAssets();
 

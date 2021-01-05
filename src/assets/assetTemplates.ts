@@ -1,4 +1,4 @@
-export const bspTemplate = `
+export const liquidTemplate = `d
   {%- assign collection = collections['bsp'] -%}
   {% for product in collection.products limit: 4 %}
   <a href="{{ product.url }}">
@@ -9,4 +9,8 @@ export const bspTemplate = `
     <p>{{ product.price | money }}</p>
   </a>
 {% endfor %}
+`;
+
+export const cssTemplate = `
+
 `;
