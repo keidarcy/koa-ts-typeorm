@@ -1,7 +1,7 @@
 import { Layout } from '@shopify/polaris';
 import { useContext, useEffect } from 'react';
 import { VaniContext } from '../../utils/contexts/VCScontext';
-import { productCardAnimate, selectVariant } from '../../utils/front.helper';
+import { productCardAnimate, selectVariant } from '../../utils/common';
 import './card.css';
 
 export const CustomizeCard = () => {
@@ -11,7 +11,6 @@ export const CustomizeCard = () => {
   useEffect(() => {
     selectVariant();
     productCardAnimate();
-    // console.log(css.toString());
   }, [product]);
 
   return (

@@ -141,11 +141,12 @@ export class CustomizeService {
     });
   }
 
-  async createSnippet() {
+  async createFile(path, content) {
+    await this.shopify.asset.get(this.themeId, { 'asset[key]': path });
     await this.findCurrentThemeId();
     await this.shopify.asset.create(this.themeId, {
-      key: `snippets/vcs.liquid`,
-      value: liquidTemplate
+      key: path,
+      value: content
     });
   }
 

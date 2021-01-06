@@ -10,6 +10,10 @@ module.exports = withCSS({
   webpack: (config) => {
     const env = { API_KEY: apiKey, TAWK_SRC: tawkSrc };
     config.plugins.push(new webpack.DefinePlugin(env));
+    config.module.rules.push({
+      test: /\.liquid$/,
+      use: 'raw-loader'
+    });
     return config;
   }
 });

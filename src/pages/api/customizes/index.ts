@@ -4,6 +4,9 @@ import { PrismaClient, Customize } from '@prisma/client';
 import { loader } from 'graphql.macro';
 import Product from '../../../controllers/Product';
 import Shopify from 'shopify-api-node';
+import { liquidTemplate } from '../../../assets/assetTemplates';
+import css from '../../../assets/vcs.css.liquid';
+import js from '../../../assets/vcs.js.liquid';
 import { CustomizeService } from '../../../controllers/Customize.service';
 
 const handler = nc<NextApiRequest, NextApiResponse>();
@@ -46,7 +49,9 @@ handler.put<ExtendedPutRequest, ExtendedResponse>(async (req, res) => {
   const customizeService = new CustomizeService(shop, prisma, shopify);
 
   await customizeService.createCollection();
-  await customizeService.createSnippet();
+  await customizeService.createFile('snippets/vcs.liquid', liquidTemplate);
+  await customizeService.createFile('assets/vcs.css.liquid', css);
+  await customizeService.createFile('assets/vcs.js.liquid', js);
   await customizeService.modifyAssets();
 
   const data = await customizeService.updateAppDB(updatedCustomize);
