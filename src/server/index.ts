@@ -8,6 +8,9 @@ import env, { isDev, port } from '../utils/env.helper';
 import { addContext } from './middlewares/addToContext';
 import { createShopifyAuth } from './middlewares/createShopifyAuth';
 import { letNextJsHandle } from './middlewares/letNextJsHandle';
+import serverWork from './server.helper';
+
+serverWork();
 
 const app = next({ dev: isDev });
 

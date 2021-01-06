@@ -1,20 +1,18 @@
 export const selectVariant = () => {
-  const select1 = document.querySelector('.js-vcs-option-0') as HTMLSelectElement | null;
-  const select2 = document.querySelector('.js-vcs-option-1') as HTMLSelectElement | null;
-  const select3 = document.querySelector('.js-vcs-option-2') as HTMLSelectElement | null;
+  const select1 = document.querySelector('.js-vcs-option-0');
+  const select2 = document.querySelector('.js-vcs-option-1');
+  const select3 = document.querySelector('.js-vcs-option-2');
   const price = document.querySelector('.js-vcs-price-1');
   const compareAtPrice = document.querySelector('.js-vcs-compare-price-1');
-  const variantSelect = document.querySelector(
-    '.js-vcs-variant-select'
-  ) as HTMLSelectElement;
-  const button = document.querySelector('button.js-vcs-button') as HTMLButtonElement;
+  const variantSelect = document.querySelector('.js-vcs-variant-select');
+  const button = document.querySelector('button.js-vcs-button');
 
   const selectVariantOption = (fullTitle) => {
     let shouldDisable = true;
     Array.from(variantSelect.children).forEach((option, index) => {
       if (option.innerHTML === fullTitle) {
-        variantSelect.value = (variantSelect.children[index] as HTMLOptionElement).value;
-        const data = (option as HTMLOptionElement).dataset as optionInterface;
+        variantSelect.value = variantSelect.children[index].value;
+        const data = option.dataset;
         price.innerHTML = data.price;
         compareAtPrice.innerHTML = data.compareatprice;
         if (data.availble === 'true') {
@@ -63,9 +61,9 @@ export const selectVariant = () => {
 };
 
 export const productCardAnimate = () => {
-  const card = document.querySelector('.js-vcs-card') as HTMLDivElement;
+  const card = document.querySelector('.js-vcs-card');
 
-  card.addEventListener('mousemove', (e: MouseEvent) => {
+  card.addEventListener('mousemove', (e) => {
     const { top, bottom, left, right } = card.getBoundingClientRect();
     const width = left / 2 + right / 2;
     const height = top / 2 + bottom / 2;

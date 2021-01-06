@@ -48,14 +48,22 @@ handler.put<ExtendedPutRequest, ExtendedResponse>(async (req, res) => {
 
   const customizeService = new CustomizeService(shop, prisma, shopify);
 
-  await customizeService.createCollection();
-  await customizeService.createFile('snippets/vcs.liquid', liquidTemplate);
-  await customizeService.createFile('assets/vcs.css.liquid', css);
-  await customizeService.createFile('assets/vcs.js.liquid', js);
-  await customizeService.modifyAssets();
+  try {
+    await customizeService.createCollection();
+    await customizeService.createFile(
+      'snippets/vcs.liquid',
+      liquidTemplate(updatedCustomize)
+    );
+    await customizeService.createFile('assets/vcs.css.liquid', css);
+    await customizeService.createFile('assets/vcs.js.liquid', js);
+    await customizeService.modifyAssets();
+    console.log('object');
 
-  const data = await customizeService.updateAppDB(updatedCustomize);
-  res.json(data);
+    const data = await customizeService.updateAppDB(updatedCustomize);
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 export default handler;

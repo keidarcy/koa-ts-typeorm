@@ -1,6 +1,3 @@
-import { Customize } from '@prisma/client';
-
-export const liquidTemplate = (customize: Customize) => `
 <link rel="stylesheet" type="text/css" href="{{ 'vcs.css' | asset_url }}"/>
 <div class="vcs-content-container">
   <p class="vcs-section-title" style="color: ${customize?.titleColor};">
@@ -56,4 +53,3 @@ export const liquidTemplate = (customize: Customize) => `
 </div>
 
 <script src="{{ 'vcs.js' | asset_url }}" defer data-no-instant></script>>
-`;

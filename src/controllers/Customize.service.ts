@@ -142,12 +142,15 @@ export class CustomizeService {
   }
 
   async createFile(path, content) {
-    await this.shopify.asset.get(this.themeId, { 'asset[key]': path });
-    await this.findCurrentThemeId();
-    await this.shopify.asset.create(this.themeId, {
-      key: path,
-      value: content
-    });
+    try {
+      await this.shopify.asset.get(this.themeId, { 'asset[key]': path });
+    } catch (error) {
+      await this.findCurrentThemeId();
+      await this.shopify.asset.create(this.themeId, {
+        key: path,
+        value: content
+      });
+    }
   }
 
   private async findCurrentThemeId() {
