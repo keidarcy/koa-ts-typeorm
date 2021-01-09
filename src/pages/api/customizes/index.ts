@@ -4,9 +4,6 @@ import { PrismaClient, Customize } from '@prisma/client';
 import { loader } from 'graphql.macro';
 import Product from '../../../controllers/Product';
 import Shopify from 'shopify-api-node';
-import { liquidTemplate } from '../../../assets/assetTemplates';
-import css from '../../../assets/vcs.css.liquid';
-import js from '../../../assets/vcs.js.liquid';
 import { CustomizeService } from '../../../controllers/Customize.service';
 
 const handler = nc<NextApiRequest, NextApiResponse>();
@@ -47,22 +44,21 @@ handler.put<ExtendedPutRequest, ExtendedResponse>(async (req, res) => {
   const { shopify, shop } = req;
 
   const customizeService = new CustomizeService(shop, prisma, shopify);
-
   try {
-    await customizeService.createCollection();
-    await customizeService.createFile(
-      'snippets/vcs.liquid',
-      liquidTemplate(updatedCustomize)
-    );
-    await customizeService.createFile('assets/vcs.css.liquid', css);
-    await customizeService.createFile('assets/vcs.js.liquid', js);
-    await customizeService.modifyAssets();
-    console.log('object');
+    const firstTime = await customizeService.isFirstTime();
+
+    console.log({ firstTime });
+
+    if (firstTime) {
+      customizeService.initVCSToShop(updatedCustomize);
+    } else {
+      customizeService.updateVCSChange(updatedCustomize);
+    }
 
     const data = await customizeService.updateAppDB(updatedCustomize);
     res.json(data);
   } catch (error) {
-    console.log(error);
+    console.log({ error });
   }
 });
 

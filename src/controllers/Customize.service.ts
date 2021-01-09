@@ -1,8 +1,9 @@
 import { Customize, PrismaClient } from '@prisma/client';
 import Shopify from 'shopify-api-node';
-import { liquidTemplate } from '../assets/assetTemplates';
 import { VCSCollection } from '../utils/type.helper';
-
+import { liquidTemplate } from '../assets/assetTemplates';
+import css from '../assets/vcs.css.liquid';
+import js from '../assets/vcs.js.liquid';
 export class CustomizeService {
   constructor(
     public shop: string,
@@ -57,6 +58,44 @@ export class CustomizeService {
     });
 
     return data;
+  }
+
+  async initThemeId() {
+    const themes = await this.shopify.theme.list();
+    const themeId = themes.find((theme) => theme.role === 'main').id;
+    console.log({ themeId });
+    this.themeId = themeId;
+  }
+
+  async isFirstTime(): Promise<boolean> {
+    await this.initThemeId();
+    const themeLiquid = await this.shopify.asset.get(this.themeId, {
+      asset: {
+        key: 'layout/theme.liquid'
+      }
+    });
+    return !/vcs/.test(themeLiquid.value);
+  }
+
+  async initVCSToShop(customize: Customize) {
+    await this.createCollection();
+    await this.createFile('snippets/vcs.liquid', liquidTemplate(customize));
+    await this.createFile('assets/vcs.css.liquid', css);
+    await this.createFile('assets/vcs.js.liquid', js);
+    await this.updateThemeLiquid();
+  }
+
+  async updateVCSChange(customize: Customize) {
+    const newVCS = liquidTemplate(customize);
+    try {
+      const res = await this.shopify.asset.update(this.themeId, {
+        key: 'snippets/vcs.liquid',
+        value: newVCS
+      });
+      console.log({ res });
+    } catch (error) {
+      console.log({ error });
+    }
   }
 
   async createCollection() {
@@ -114,8 +153,7 @@ export class CustomizeService {
     }
   }
 
-  async modifyAssets() {
-    await this.findCurrentThemeId();
+  async updateThemeLiquid() {
     const date = new Date();
     await this.shopify.asset.create(this.themeId, {
       key: `layout/vcs_backup_theme_${
@@ -132,7 +170,7 @@ export class CustomizeService {
 
     const newValue = themeLiquid.value.replace(
       '{{ content_for_layout }}',
-      '\n{{ content_for_layout }}\n{% render "vcs" %}'
+      '  {{ content_for_layout }}\n   {% render "vcs" %}'
     );
 
     await this.shopify.asset.update(this.themeId, {
@@ -145,19 +183,10 @@ export class CustomizeService {
     try {
       await this.shopify.asset.get(this.themeId, { 'asset[key]': path });
     } catch (error) {
-      await this.findCurrentThemeId();
       await this.shopify.asset.create(this.themeId, {
         key: path,
         value: content
       });
     }
-  }
-
-  private async findCurrentThemeId() {
-    const themes = await this.shopify.theme.list();
-
-    const themeId = themes.find((theme) => theme.role === 'main').id;
-
-    this.themeId = themeId;
   }
 }
