@@ -68,7 +68,7 @@ export const productCardAnimate = () => {
     const width = left / 2 + right / 2;
     const height = top / 2 + bottom / 2;
     let xAxis = (width - e.pageX) / 20;
-    let yAxis = (height - e.pageY) / 20;
+    let yAxis = (height - e.pageY) / 30;
     card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
   });
 
