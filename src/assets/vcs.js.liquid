@@ -1,83 +1,67 @@
-export const selectVariant = () => {
-  const select1 = document.querySelector('.js-vcs-option-0');
-  const select2 = document.querySelector('.js-vcs-option-1');
-  const select3 = document.querySelector('.js-vcs-option-2');
-  const price = document.querySelector('.js-vcs-price-1');
-  const compareAtPrice = document.querySelector('.js-vcs-compare-price-1');
-  const variantSelect = document.querySelector('.js-vcs-variant-select');
-  const button = document.querySelector('button.js-vcs-button');
+const VCSMain = () => {
+  const vcsCards = document.querySelectorAll('.js-vcs-card');
 
-  const selectVariantOption = (fullTitle) => {
-    let shouldDisable = true;
-    Array.from(variantSelect.children).forEach((option, index) => {
-      if (option.innerHTML === fullTitle) {
-        variantSelect.value = variantSelect.children[index].value;
-        const data = option.dataset;
-        price.innerHTML = data.price;
-        compareAtPrice.innerHTML = data.compareatprice;
-        if (data.availble === 'true') {
-          shouldDisable = false;
+  vcsCards.forEach((card) => {
+    const select1 = card.querySelector('.js-vcs-option-0');
+    const select2 = card.querySelector('.js-vcs-option-1');
+    const select3 = card.querySelector('.js-vcs-option-2');
+    const price = card.querySelector('.js-vcs-price-1');
+    const compareAtPrice = card.querySelector('.js-vcs-compare-price-1');
+    const variantSelect = card.querySelector('.js-vcs-variant-select');
+    const button = card.querySelector('button.js-vcs-button');
+
+    const selectVariantOption = (fullTitle) => {
+      let shouldDisable = true;
+      Array.from(variantSelect.children).forEach((option, index) => {
+        if (option.innerHTML.trim() === fullTitle.trim()) {
+          variantSelect.value = variantSelect.children[index].value;
+          const data = option.dataset;
+          price.innerHTML = data.price;
+          if (data.compareatprice) compareAtPrice.innerHTML = data.compareatprice;
+          if (data.availble === 'true') {
+            shouldDisable = false;
+          }
         }
+      });
+      if (shouldDisable) {
+        button.disabled = true;
+        button.classList.add('vcs-button-diabled');
+      } else {
+        button.disabled = false;
+        button.classList.remove('vcs-button-diabled');
       }
-    });
-    if (shouldDisable) {
-      button.disabled = true;
-      button.classList.add('vcs-button-diabled');
-    } else {
-      button.disabled = false;
-      button.classList.remove('vcs-button-diabled');
+    };
+
+    if (select1) {
+      select1.addEventListener('change', () => {
+        const option1 = select1.value;
+        const option2 = select2 ? ' / ' + select2.value : '';
+        const option3 = select3 ? ' / ' + select3.value : '';
+        const fullTitle = option1 + option2 + option3;
+        selectVariantOption(fullTitle);
+      });
     }
-  };
 
-  if (select1) {
-    select1.addEventListener('change', () => {
-      const option1 = select1.value;
-      const option2 = select2 ? ' / ' + select2.value : '';
-      const option3 = select3 ? ' / ' + select3.value : '';
-      const fullTitle = option1 + option2 + option3;
-      selectVariantOption(fullTitle);
-    });
-  }
+    if (select2) {
+      select2.addEventListener('change', () => {
+        const option1 = select1.value;
+        const option2 = ' / ' + select2.value;
+        const option3 = select3 ? ' / ' + select3.value : '';
+        const fullTitle = option1 + option2 + option3;
+        selectVariantOption(fullTitle);
+      });
+    }
 
-  if (select2) {
-    select2.addEventListener('change', () => {
-      const option1 = select1.value;
-      const option2 = ' / ' + select2.value;
-      const option3 = select3 ? ' / ' + select3.value : '';
-      const fullTitle = option1 + option2 + option3;
-      selectVariantOption(fullTitle);
-    });
-  }
-
-  if (select3) {
-    select3.addEventListener('change', () => {
-      const option1 = select1.value;
-      const option2 = ' / ' + select2.value;
-      const option3 = ' / ' + select3.value;
-      const fullTitle = option1 + option2 + option3;
-      selectVariantOption(fullTitle);
-    });
-  }
-};
-
-export const productCardAnimate = () => {
-  const card = document.querySelector('.js-vcs-card');
-
-  card.addEventListener('mousemove', (e) => {
-    const { top, bottom, left, right } = card.getBoundingClientRect();
-    const width = left / 2 + right / 2;
-    const height = top / 2 + bottom / 2;
-    let xAxis = (width - e.pageX) / 20;
-    let yAxis = (height - e.pageY) / 20;
-    card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-  });
-
-  card.addEventListener('mouseenter', () => {
-    card.style.transition = 'none';
-  });
-
-  card.addEventListener('mouseleave', () => {
-    card.style.transition = 'all 0.5s ease';
-    card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+    if (select3) {
+      select3.addEventListener('change', () => {
+        const option1 = select1.value;
+        const option2 = ' / ' + select2.value;
+        const option3 = ' / ' + select3.value;
+        const fullTitle = option1 + option2 + option3;
+        selectVariantOption(fullTitle);
+      });
+    }
   });
 };
+
+VCSMain();

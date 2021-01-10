@@ -12,9 +12,4 @@ export default () => {
     path.resolve(__dirname, '../assets/vcs.css.liquid'),
     callback
   );
-  fs.copyFile(
-    path.resolve(__dirname, '../utils/vcs.liquid.js'),
-    path.resolve(__dirname, '../assets/vcs.js.liquid'),
-    callback
-  );
 };

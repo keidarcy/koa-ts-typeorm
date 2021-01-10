@@ -36,7 +36,8 @@
     margin: 20px 30px;
     border-radius: 5px;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
-    max-width: 300px;
+    width: 300px;
+    min-width: 300px;
 }
 
 .vcs-image {
@@ -60,6 +61,7 @@
 
 .vcs-compare-price {
     text-decoration: line-through;
+    margin-right: 5px;
 }
 
 .vcs-image-back {

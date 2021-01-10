@@ -1,17 +1,12 @@
 import { Layout } from '@shopify/polaris';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { VaniContext } from '../../utils/contexts/VCScontext';
-import { productCardAnimate, selectVariant } from '../../utils/vcs.liquid';
 import './card.css';
 
 export const CustomizeCard = () => {
   const {
     state: { customize, product }
   } = useContext(VaniContext);
-  useEffect(() => {
-    selectVariant();
-    productCardAnimate();
-  }, [product]);
 
   return (
     <Layout.Section key="customize-card">
