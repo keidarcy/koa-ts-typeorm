@@ -3,7 +3,6 @@ import Shopify from 'shopify-api-node';
 import { VCSCollection } from '../utils/type.helper';
 import { liquidTemplate } from '../assets/assetTemplates';
 import css from '../assets/vcs.css.liquid';
-import js from '../assets/vcs.js.liquid';
 export class CustomizeService {
   constructor(
     public shop: string,
@@ -24,15 +23,21 @@ export class CustomizeService {
       bspTitle,
       rpTitle,
       showCart,
-      enableSlideshow,
       showVariant,
       showPrice,
-      cropImage,
+      showNumber,
       cartText,
       cartColor,
       titleColor,
       productNameColor
     } = customize;
+
+    let newShowNumber = showNumber;
+    if (Object.is(Number(showNumber), NaN) || +showNumber > 20 || +showNumber < 1) {
+      newShowNumber = 4;
+    } else {
+      newShowNumber = +showNumber;
+    }
 
     const data = await this.prisma.customize.update({
       where: { shop: this.shop },
@@ -46,10 +51,9 @@ export class CustomizeService {
         bspTitle,
         rpTitle,
         showCart,
-        enableSlideshow,
         showVariant,
         showPrice,
-        cropImage,
+        showNumber: newShowNumber,
         cartText,
         cartColor,
         titleColor,
@@ -81,7 +85,6 @@ export class CustomizeService {
     await this.createCollection();
     await this.createFile('snippets/vcs.liquid', liquidTemplate(customize));
     await this.createFile('assets/vcs.css.liquid', css);
-    await this.createFile('assets/vcs.js.liquid', js);
     await this.updateThemeLiquid();
   }
 

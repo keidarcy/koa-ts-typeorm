@@ -18,16 +18,6 @@ export const CustomizeForm = () => {
       title: 'Show Price information',
       isOn: state.customize?.showPrice,
       field: 'showPrice'
-    },
-    {
-      title: 'Crop Product images',
-      isOn: state.customize?.cropImage,
-      field: 'cropImage'
-    },
-    {
-      title: 'Enable Slideshow animation',
-      isOn: state.customize?.enableSlideshow,
-      field: 'enableSlideshow'
     }
   ];
 
@@ -49,38 +39,48 @@ export const CustomizeForm = () => {
     }
   ];
 
-  const cart = {
-    title: 'Cart',
-    field: 'cartText',
-    default: 'ADD TO CART'
+  const columns = {
+    showNumber: {
+      title: 'How many product to show',
+      field: 'showNumber',
+      default: 4
+    },
+    cart: {
+      title: 'Text in cart button',
+      field: 'cartText',
+      default: 'ADD TO CART'
+    }
   };
 
-  const handleChange = useCallback(
-    (value) =>
-      dispatch({
-        type: VaniActionEnum.CHANGE_CUSTOMIZE_VALUE,
-        field: cart.field,
-        value
-      }),
-    []
-  );
+  const handleChange = useCallback((value, field) => {
+    dispatch({
+      type: VaniActionEnum.CHANGE_CUSTOMIZE_VALUE,
+      field,
+      value
+    });
+  }, []);
 
   return (
     <Layout.Section oneHalf>
       <Card title="Customize Your Product Card">
         <Card.Section>
           <FormLayout>
-            <Stack>
-              <Stack.Item fill>{cart.title}</Stack.Item>
-              <TextField
-                label={''}
-                labelHidden
-                value={state.customize?.cartText}
-                onChange={handleChange}
-                placeholder={cart.default}
-                align="right"
-              />
-            </Stack>
+            <TextField
+              label={columns.showNumber.title}
+              type="number"
+              value={state.customize?.showNumber?.toString()}
+              id={columns.showNumber.field}
+              onChange={handleChange}
+              placeholder={columns.showNumber.default.toString()}
+              helpText="The recommendation is 4. The maximum number is 20."
+            />
+            <TextField
+              label={columns.cart.title}
+              id={columns.cart.field}
+              value={state.customize?.cartText}
+              onChange={handleChange}
+              placeholder={columns.cart.default}
+            />
             {colors.map((color) => (
               <Stack key={color.color}>
                 <Stack.Item fill>{color.title}</Stack.Item>

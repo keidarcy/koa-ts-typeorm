@@ -83,7 +83,7 @@ export const CustomizeCard = () => {
                 color: customize?.productNameColor
               }}
             >
-              ADD TO CART
+              {customize?.cartText}
             </button>
           )}
         </div>

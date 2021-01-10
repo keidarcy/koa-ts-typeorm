@@ -59,7 +59,8 @@ export const VaniSaveBar: React.FC = () => {
               onAction: () => {
                 dispatch({
                   type: VaniActionEnum.SET_API_VALUES,
-                  customize: stateRef.current
+                  customize: stateRef.current,
+                  product: state.product
                 });
                 setShow(false);
               }

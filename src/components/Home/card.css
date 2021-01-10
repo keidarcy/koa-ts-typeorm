@@ -19,8 +19,8 @@
 .vcs-section-title {
     display: block;
     text-align: center;
-    line-height: 18px;
-    font-size: 18px;
+    line-height: 22px;
+    font-size: 22px;
     font-weight: 700;
     color: #000;
 }
@@ -163,6 +163,7 @@
     border: 1px solid rgb(83, 83, 83);
     box-shadow: none;
     padding: 4px 9px;
+    width: 50%;
     background: #93C5FD;
     font-weight: 700;
     text-shadow: 1px 1px 0 #4B5563;
