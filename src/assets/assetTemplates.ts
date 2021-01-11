@@ -3,6 +3,7 @@ import { Customize } from '@prisma/client';
 export const liquidTemplate = (customize: Customize) => `
 <link rel="stylesheet" type="text/css" href="{{ 'vcs.css' | asset_url }}"/>
 {% assign home_cart = "index,cart" | split:"," %}
+{% assign rvp_pages = "index,product,collection,cart" | split:"," %}
 {% if home_cart contains template %}
   <div class="vcs-content-container js-bsp-container">
     <p class="vcs-section-title" style="color: ${customize?.titleColor};">
@@ -164,6 +165,27 @@ export const liquidTemplate = (customize: Customize) => `
   </div>
 {% endif %}
 
+{% if "product" contains template %}
+  <div class="vcs-content-container  js-rp-container">
+    <p class="vcs-section-title" style="color: ${customize?.titleColor};">
+      ${customize?.rpTitle}
+    </p>
+    <div class="vcs-products-container">
+    </div>
+  </div>
+{% endif %}
+
+{% if rvp_pages contains template %}
+  <div class="vcs-content-container  js-rvp-container">
+    <p class="vcs-section-title" style="color: ${customize?.titleColor};">
+      ${customize?.rvpTitle}
+    </p>
+    <div class="vcs-products-container">
+    </div>
+  </div>
+{% endif %}
+
+
 <script>
   const VCSMain = () => {
     const vcsCards = document.querySelectorAll(".js-vcs-card");
@@ -273,7 +295,18 @@ export const liquidTemplate = (customize: Customize) => `
   }
 
   // RP
+  if (${customize?.recommendedProducts}) {
+    document.querySelector('.js-rp-container').style.display = '';
+  } else {
+    document.querySelector('.js-rp-container').style.display = 'none';
+  }
 
+  // RVP
+  if (${customize?.recentlyViewedProducts}) {
+    document.querySelector('.js-rvp-container').style.display = '';
+  } else {
+    document.querySelector('.js-rvp-container').style.display = 'none';
+  }
 
 
   VCSMain();
