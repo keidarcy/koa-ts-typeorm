@@ -267,6 +267,7 @@ export const liquidTemplate = (customize: Customize) => `
   vcs.shopUrl = "{{ shop.url }}";
   vcs.template = "{{ template.name }}";
   vcs.moneyFormat = "{{ shop.money_format }}";
+  vcs.localKey = "VCS_LOCAL_STORAGE_VIEWED_PRODUCTS";
 
   // Mobile Responsive
   if(window.innerWidth < 768 || ${customize?.showNumber > 5}) {
@@ -317,6 +318,70 @@ export const liquidTemplate = (customize: Customize) => `
     document.querySelector('.js-rvp-container').style.display = 'none';
   }
 
+
+  // RVP
+    const renderRecentlyViewedProduct = (products) => {
+      let recentlyViewedProductsHtml = "";
+      console.log({products})
+      products.forEach(product => {
+        recentlyViewedProductsHtml += \`
+        <div class="vcs-card js-vcs-card" id="vcs-card-container">
+
+          <div class="vcs-image">
+            <a href=\${product.url}>
+              <img alt=\${product.title} class="vcs-image-hover" src=\${product.images[0]}/>
+              <img alt=\${product.title} class="vcs-image-back" src=\${product.images[1]}/>
+            </a>
+          </div>
+
+          <div>
+            <p class="vcs-title" style="color: ${
+              customize?.productNameColor
+            };">\${product.title}</p>
+            <p class="vcs-title" style="color: ${
+              customize?.productNameColor
+            };">\${product.vendor}</p>
+            <div class="vcs-title" style="display: ${
+              customize?.showPrice ? 'block' : 'none'
+            }">
+                <span class="vcs-compare-price js-vcs-price-1">
+                  \${product.compare_at_price}
+                </span>
+              <span class="js-vcs-compare-price-1">\${product.price}</span>
+            </div>
+          </div>
+        </div>
+        \`
+      })
+
+
+    document.querySelector('.js-rvp-container').querySelector('.vcs-products-container').innerHTML = recentlyViewedProductsHtml;
+    VCSMain();
+  }
+
+  const handleRecentlyProduct = (newProduct) => {
+      const item = localStorage.getItem(vcs.localKey);
+
+      const storedProducts = JSON.parse(item);
+
+      renderRecentlyViewedProduct(storedProducts ?? [])
+
+      let newProducts = [];
+
+      if (!storedProducts) {
+        newProducts = [newProduct];
+      } else {
+        const products = storedProducts.filter((product) => product.handle !== '{{product.handle}}');
+        newProducts = [...[newProduct], ...products];
+      }
+      const productString = JSON.stringify(newProducts);
+      localStorage.setItem(vcs.localKey, productString);
+  }
+
+  handleRecentlyProduct({handle: '{{product.handle}}', title: '{{product.title}}', vendor: '{{product.vendor}}', compare_at_price: '{{product.compare_at_price}}', price: '{{product.price}}', images: ["{{product.images[0] | img_url: '1000x1000', crop: 'bottom' }}", "{{product.images[1] | img_url: '1000x1000', crop: 'bottom' }}"], url: '{{product.url}}', id: '{{prdocut.id}}'})
+
+
+  // RP
   if (${customize?.recommendedProducts}) {
     const RenderRecommendProducts = async () => {
       const rawProducts = await fetch(\`/recommendations/products.json?product_id={{ product.id }}&limit=${
