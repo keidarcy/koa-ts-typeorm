@@ -29,7 +29,7 @@ export const liquidTemplate = (customize: Customize) => `
               customize?.productNameColor
             };">{{product.vendor}}</p>
             <div class="vcs-title" style="display: ${
-              customize?.showPrice ? '' : 'none'
+              customize?.showPrice ? 'block' : 'none'
             };">
               {% if product.compare_at_price %}
                 <span class="vcs-compare-price js-vcs-price-1">
@@ -43,7 +43,7 @@ export const liquidTemplate = (customize: Customize) => `
           {%- unless product.has_only_default_variant -%}
             {% for product_option in product.options_with_values %}
               <div class="vcs-selection-wrapper"  style="display: ${
-                customize?.showVariant ? '' : 'none'
+                customize?.showVariant ? 'block' : 'none'
               };">
                 <p class="vcs-selection-label">{{product_option.name}}</p>
                 <div class="vcs-selection-box">
@@ -75,9 +75,9 @@ export const liquidTemplate = (customize: Customize) => `
             {% endif %}
             <input hidden name="quantity" type="text" value="1"/>
             <button  class="vcs-button js-vcs-button {%- unless product.available -%}vcs-button-diabled{%- endunless -%}" 
-            style="display: ${customize?.showCart ? '' : 'none'};background-color: ${
+            style="display: ${customize?.showCart ? 'block' : 'none'};background-color: ${
   customize?.cartColor
-}; color: ${customize?.productNameColor}">
+}; color: ${customize?.productNameColor};">
               ${customize.cartText}
             </button>
           </form>
@@ -155,7 +155,7 @@ export const liquidTemplate = (customize: Customize) => `
             <input hidden name="quantity" type="text" value="1"/>
             <button class="vcs-button js-vcs-button {%- unless product.available -%}vcs-button-diabled{%- endunless -%}" style="background-color: ${
               customize?.cartColor
-            }; color: ${customize?.productNameColor}">
+            }; color: ${customize?.productNameColor};">
               ${customize.cartText}
             </button>
           </form>
@@ -208,9 +208,6 @@ export const liquidTemplate = (customize: Customize) => `
             price.innerHTML = data.price;
             if (data.compareatprice) 
               compareAtPrice.innerHTML = data.compareatprice;
-            
-
-
             if (data.availble === "true") {
               shouldDisable = false;
             }
@@ -281,34 +278,188 @@ export const liquidTemplate = (customize: Customize) => `
 
   // BSP
   if (${customize?.bestSellingProducts}) {
-    document.querySelector('.js-bsp-container').style.display = '';
+    if(['index', 'cart'].includes('{{template}}')) {
+      document.querySelector('.js-bsp-container').style.display = 'block';
+    }
   } else {
-    document.querySelector('.js-bsp-container').style.display = 'none';
+    if(['index', 'cart'].includes('{{template}}')) {
+      document.querySelector('.js-bsp-container').style.display = 'none';
+    }
   }
 
 
   // NP
   if (${customize?.newestProducts}) {
-    document.querySelector('.js-np-container').style.display = '';
+    if(['index', 'cart'].includes('{{template}}')) {
+      document.querySelector('.js-np-container').style.display = 'block';
+    }
   } else {
-    document.querySelector('.js-np-container').style.display = 'none';
+    if(['index', 'cart'].includes('{{template}}')) {
+      document.querySelector('.js-np-container').style.display = 'none';
+    }
   }
 
   // RP
   if (${customize?.recommendedProducts}) {
-    document.querySelector('.js-rp-container').style.display = '';
+    if(['product'].includes('{{template}}')) {
+      document.querySelector('.js-rp-container').style.display = 'block';
+    }
   } else {
-    document.querySelector('.js-rp-container').style.display = 'none';
+    if(['product'].includes('{{template}}')) {
+      document.querySelector('.js-rp-container').style.display = 'none';
+    }
   }
 
   // RVP
   if (${customize?.recentlyViewedProducts}) {
-    document.querySelector('.js-rvp-container').style.display = '';
+    document.querySelector('.js-rvp-container').style.display = 'block';
   } else {
     document.querySelector('.js-rvp-container').style.display = 'none';
   }
 
+  if (${customize?.recommendedProducts}) {
+    const RenderRecommendProducts = async () => {
+      const rawProducts = await fetch(\`/recommendations/products.json?product_id={{ product.id }}&limit=${
+        customize?.showNumber
+      }\`)
+      const {products} = await rawProducts.json()
+      let recommendsHtml = "";
+      console.log({products})
+      products.forEach(product => {
+        recommendsHtml += \`
+          <div class="vcs-card js-vcs-card" id="vcs-card-container">
+            <div class="vcs-image">
+              <a href=\${
+          product.url
+        }>
+                <img alt=\${
+          product.title
+        } class="vcs-image-hover" src=\${
+          product.images[0]
+        }/>
+                <img alt=\${
+          product.title
+        } class="vcs-image-back" src=\${
+          product.images[1]
+        }/>
+              </a>
+            </div>
 
+            <div>
+              <p class="vcs-title" style="color: ${customize?.productNameColor};">\${
+          product.title
+        }</p>
+              <p class="vcs-title" style="color: ${customize?.productNameColor};">\${
+          product.vendor
+        }</p>
+              <div class="vcs-title" style="display: ${
+                customize?.showPrice ? 'block' : 'none'
+              };">\`;
+
+        if (product.compare_at_price) {
+
+          recommendsHtml += \`<span class="vcs-compare-price js-vcs-price-1">
+                  \${
+            product.compare_at_price
+          }
+                </span>\`;
+        }
+  recommendsHtml += \`<span class="js-vcs-compare-price-1">\${product.price
+    }</span>
+              </div>
+            </div>\`;
+
+        if (product.options[0].values[0] !== "Default Title") {
+          product.options.forEach((option, index) => {
+            recommendsHtml += \`
+                <div class="vcs-selection-wrapper"  style="display: ${
+                  customize?.showVariant ? 'block' : 'none'
+                };">
+                  <p class="vcs-selection-label">\${option.name
+    }</p>
+                  <div class="vcs-selection-box">
+                    <select id=\${option.name
+    } name=\${option.name
+    } class="js-vcs-option-\${index}">\`;
+
+            option.values.forEach((value, innerIndex) => {
+              recommendsHtml += \`
+                        <option \${!innerIndex
+      ? "selected"
+      : ""
+    }>
+                          \${value}
+                        </option>
+                        \`;
+              })
+            recommendsHtml += \`
+                    </select>
+                  </div>
+                </div>
+              \`
+          })
+        }
+
+        recommendsHtml += \`
+            <form action="/cart/add" enctype="multipart/form-data" method="post">
+              <input name="form_type" type="hidden" value="product">
+              <input name="utf8" type="hidden" value="✓">\`;
+
+        if (product.options[0].values[0] === "Default Title") {
+          recommendsHtml += \`
+                <input name="id" value="\${
+            product.variants[0].id
+          }" type="hidden">\`;
+        } else {
+          recommendsHtml += \`
+                <select class="js-vcs-variant-select" hidden name="id">\`;
+          product.variants.forEach(variant => {
+            recommendsHtml += \`
+                    <option data-availble=\${
+              variant.available
+            } data-compareatprice="\${
+              variant.compare_at_price
+            }" data-price="\${
+              variant.price
+            }" value=\${
+              variant.id
+            }>
+                      \${
+              variant.title
+            }
+                    </option>
+          \`;
+          })
+          recommendsHtml += \`
+                </select>\`;
+        }
+        recommendsHtml += \`
+              <input hidden name="quantity" type="text" value="1"/>
+              <button  class="vcs-button js-vcs-button \${
+          product.available
+            ? ""
+            : "vcs-button-diabled"
+          }"
+              style="display: ${
+                customize?.showCart ? 'block' : 'none'
+              };background-color: ${customize?.cartColor}; color: ${
+  customize?.productNameColor
+};">
+                ${customize?.cartText}
+              </button>
+            </form>
+          </div>
+        \`
+        })
+
+        document.querySelector('.js-rp-container').querySelector('.vcs-products-container').innerHTML = recommendsHtml;
+
+  VCSMain();
+    }
+
+
+    RenderRecommendProducts();
+  }
   VCSMain();
 </script>
 `;
