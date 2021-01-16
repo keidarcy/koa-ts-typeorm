@@ -67,7 +67,7 @@ export const liquidTemplate = (customize: Customize) => `
               </select>
             {% endif %}
             <input hidden name="quantity" type="text" value="1"/>
-            <button  class="vcs-button js-vcs-button {%- unless product.available -%}vcs-button-diabled{%- endunless -%}" 
+            <button  class="vcs-button js-vcs-button {%- unless product.available -%}vcs-button-diabled{%- endunless -%}"
             style="display: ${customize?.showCart ? 'block' : 'none'};background-color: ${customize?.cartColor}; color: ${customize?.productNameColor};">
               ${customize.cartText}
             </button>
@@ -110,7 +110,7 @@ export const liquidTemplate = (customize: Customize) => `
 
           {%- unless product.has_only_default_variant -%}
             {% for product_option in product.options_with_values %}
-              <div class="vcs-selection-wrapper">
+              <div class="vcs-selection-wrapper"  style="display: ${customize?.showVariant ? 'block' : 'none'};">
                 <p class="vcs-selection-label">{{product_option.name}}</p>
                 <div class="vcs-selection-box">
                   <select id={{product_option.name}} name={{product_option.name}} class="js-vcs-option-{{ forloop.index0 }}">
@@ -140,7 +140,10 @@ export const liquidTemplate = (customize: Customize) => `
               </select>
             {% endif %}
             <input hidden name="quantity" type="text" value="1"/>
-            <button class="vcs-button js-vcs-button {%- unless product.available -%}vcs-button-diabled{%- endunless -%}" style="background-color: ${customize?.cartColor}; color: ${customize?.productNameColor};">
+            <button
+                class="vcs-button js-vcs-button {%- unless product.available -%}vcs-button-diabled{%- endunless -%}"
+                style="display: ${customize?.showCart ? 'block' : 'none'};background-color: ${customize?.cartColor}; color: ${customize?.productNameColor};"
+                >
               ${customize.cartText}
             </button>
           </form>
@@ -151,7 +154,7 @@ export const liquidTemplate = (customize: Customize) => `
 {% endif %}
 
 {% if "product" contains template %}
-  <div class="vcs-content-container  js-rp-container">
+  <div class="vcs-content-container js-rp-container">
     <p class="vcs-section-title" style="color: ${customize?.titleColor};">
       ${customize?.rpTitle}
     </p>
@@ -161,7 +164,7 @@ export const liquidTemplate = (customize: Customize) => `
 {% endif %}
 
 {% if rvp_pages contains template %}
-  <div class="vcs-content-container  js-rvp-container">
+  <div class="vcs-content-container js-rvp-container">
     <p class="vcs-section-title" style="color: ${customize?.titleColor};">
       ${customize?.rvpTitle}
     </p>
@@ -206,7 +209,7 @@ export const liquidTemplate = (customize: Customize) => `
             variantSelect.value = variantSelect.children[index].value;
             const data = option.dataset;
             price.innerHTML = data.price;
-            if (data.compareatprice.replace(/[^0-9]+/g, '') > 0) 
+            if (data.compareatprice.replace(/[^0-9]+/g, '') > 0)
               compareAtPrice.innerHTML = data.compareatprice;
             if (data.availble === "true") {
               shouldDisable = false;
@@ -265,28 +268,30 @@ export const liquidTemplate = (customize: Customize) => `
 
     const storedProducts = JSON.parse(item);
 
+    if(['product'].includes('{{template}}')) {
 
-    let newProducts = [];
+        let newProducts = [];
 
-    if (!storedProducts) {
-      newProducts = [newProduct];
-    } else {
-      const products = storedProducts.filter((product) => product.handle !== '{{product.handle}}');
-      newProducts = [...[newProduct], ...products];
+        if (!storedProducts) {
+          newProducts = [newProduct];
+        } else {
+          const products = storedProducts.filter((product) => product.handle !== '{{product.handle}}');
+          newProducts = [...[newProduct], ...products];
+        }
+
+        const productsToStore = newProducts.slice(0, {{ max_number}})
+
+        console.log({productsToStore})
+
+        const productsString = JSON.stringify(productsToStore);
+        localStorage.setItem(vcs.localKey, productsString);
     }
 
-    const productsToStore = newProducts.slice(0, {{ max_number}})
-
-    console.log({productsToStore})
-
-    const productsString = JSON.stringify(productsToStore);
-    localStorage.setItem(vcs.localKey, productsString);
-
-    const rvpHtml = vcs.renderRecentlyViewedProduct(storedProducts ?? []); 
+    const rvpHtml = vcs.renderRecentlyViewedProduct(storedProducts ?? []);
     return rvpHtml;
   }
 
-  
+
   vcs.renderRecentlyViewedProduct = (products) => {
     let recentlyViewedProductsHtml = "";
     products.forEach(product => {
@@ -360,10 +365,10 @@ export const liquidTemplate = (customize: Customize) => `
           \`;
         product.variants.forEach(variant => {
           recentlyViewedProductsHtml += \`
-            <option 
-              data-availble=\${variant.available} 
-              data-compareatprice="\${vcs.moneyFormatWithCurrency(variant.compare_at_price)}" 
-              data-price="\${vcs.moneyFormatWithCurrency(variant.price)}" 
+            <option
+              data-availble=\${variant.available}
+              data-compareatprice="\${vcs.moneyFormatWithCurrency(variant.compare_at_price)}"
+              data-price="\${vcs.moneyFormatWithCurrency(variant.price)}"
               value=\${variant.id}>
               \${variant.title}
             </option>
@@ -375,9 +380,9 @@ export const liquidTemplate = (customize: Customize) => `
       }
       recentlyViewedProductsHtml += \`
             <input hidden name="quantity" type="text" value="1"/>
-            <button  
+            <button
               class="vcs-button js-vcs-button \${product.available? "": "vcs-button-diabled"}"
-              style="background-color: ${customize?.cartColor}; color: ${customize?.productNameColor};">
+              style="display: ${customize?.showCart ? 'block' : 'none'};background-color: ${customize?.cartColor}; color: ${customize?.productNameColor};">
               ${customize.cartText}
             </button>
 
@@ -463,10 +468,10 @@ export const liquidTemplate = (customize: Customize) => `
             \`;
         product.variants.forEach(variant => {
           recommendsHtml += \`
-            <option 
-              data-availble=\${variant.available} 
-              data-compareatprice="\${vcs.moneyFormatWithCurrency(variant.compare_at_price)}" 
-              data-price="\${vcs.moneyFormatWithCurrency(variant.price)}" 
+            <option
+              data-availble=\${variant.available}
+              data-compareatprice="\${vcs.moneyFormatWithCurrency(variant.compare_at_price)}"
+              data-price="\${vcs.moneyFormatWithCurrency(variant.price)}"
               value=\${variant.id}>
                 \${variant.title}
             </option>
@@ -478,9 +483,9 @@ export const liquidTemplate = (customize: Customize) => `
       }
       recommendsHtml += \`
             <input hidden name="quantity" type="text" value="1"/>
-            <button  
+            <button
               class="vcs-button js-vcs-button \${product.available? "": "vcs-button-diabled"}"
-              style="background-color: ${customize?.cartColor}; color: ${customize?.productNameColor};">
+              style="display: ${customize?.showCart ? 'block' : 'none'};background-color: ${customize?.cartColor}; color: ${customize?.productNameColor};">
               ${customize.cartText}
             </button>
 
@@ -490,8 +495,9 @@ export const liquidTemplate = (customize: Customize) => `
       })
       return recommendsHtml;
   }
+
   // Mobile Responsive
-  if(window.innerWidth < 768 || '{{max_number}}' > 5) {
+  if(window.innerWidth < 768 || window.innerWidth < 300*'{{ max_number }}') {
     console.log({innerWidth})
     document.querySelectorAll('.vcs-products-container').forEach(g => {
       g.style.justifyContent = 'start'
@@ -508,7 +514,6 @@ export const liquidTemplate = (customize: Customize) => `
       document.querySelector('.js-bsp-container').style.display = 'none';
     }
   }
-
 
   // NP
   if (${customize?.newestProducts}) {
@@ -540,28 +545,25 @@ export const liquidTemplate = (customize: Customize) => `
 
   // RVP
   if (${customize?.recentlyViewedProducts}) {
-    if(['product'].includes('{{template}}')) {
-      document.querySelector('.js-rvp-container').style.display = 'block';
-      const rvpHtml = vcs.handleRecentlyProduct({
-        available: {{ product.available | json }},
-        handle: '{{ product.handle }}', 
-        title: '{{ product.title }}', 
-        vendor: '{{ product.vendor }}', 
-        compare_at_price: '{{ product.compare_at_price | money }}', 
-        price: '{{ product.price | money }}', 
-        images: [
-          "{{ product.images[0] | img_url: '1000x1000', crop: 'bottom' }}", 
-          "{{ product.images[1] | img_url: '1000x1000', crop: 'bottom' }}"
-        ], 
-        url: '{{ product.url }}', 
-        id: '{{ product.id }}',
-        has_only_default_variant: {{ product.has_only_default_variant | json }},
-        options: {{ product.options_with_values | json }},
-        variants: {{ product.variants | json }}
-      })
-      document.querySelector('.js-rvp-container').querySelector('.vcs-products-container').innerHTML = rvpHtml;
-      vcs.main();
-    }
+    document.querySelector('.js-rvp-container').style.display = 'block';
+    const rvpHtml = vcs.handleRecentlyProduct({
+      available: {{ product.available | json }},
+      handle: '{{ product.handle }}',
+      title: '{{ product.title }}',
+      vendor: '{{ product.vendor }}',
+      compare_at_price: '{{ product.compare_at_price | money }}',
+      price: '{{ product.price | money }}',
+      images: [
+        "{{ product.images[0] | img_url: '1000x1000', crop: 'bottom' }}",
+        "{{ product.images[1] | img_url: '1000x1000', crop: 'bottom' }}"
+      ],
+      url: '{{ product.url }}',
+      id: '{{ product.id }}',
+      has_only_default_variant: {{ product.has_only_default_variant | json }},
+      options: {{ product.options_with_values | json }},
+      variants: {{ product.variants | json }}
+    })
+  document.querySelector('.js-rvp-container').querySelector('.vcs-products-container').innerHTML = rvpHtml;
   } else {
     if(['product'].includes('{{template}}')) {
       document.querySelector('.js-rvp-container').style.display = 'none';

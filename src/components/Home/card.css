@@ -52,7 +52,7 @@
     z-index: 99;
     top: 0;
     left: 0;
-    transition: opacity 0.3s;
+    transition: opacity 0.5s;
 }
 
 .vcs-image-hover:hover {

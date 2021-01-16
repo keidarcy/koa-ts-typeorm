@@ -1,5 +1,5 @@
 import { Layout } from '@shopify/polaris';
-import { useContext } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { VaniContext } from '../../utils/contexts/VCScontext';
 import './card.css';
 
@@ -8,13 +8,18 @@ export const CustomizeCard = () => {
     state: { customize, product }
   } = useContext(VaniContext);
 
+  const cardRef = useRef<HTMLDivElement>();
+  useEffect(() => {
+    cardRef.current.style.margin = '20px 0';
+  }, [cardRef]);
+
   return (
     <Layout.Section key="customize-card">
       <div className="vcs-content-container">
         <p className="vcs-section-title" style={{ color: customize?.titleColor }}>
           {customize?.bspTitle}
         </p>
-        <div id="vcs-card-container" className="vcs-card js-vcs-card">
+        <div id="vcs-card-container" ref={cardRef} className="vcs-card js-vcs-card">
           <div className="vcs-image">
             <a href={product?.url} target="_blank">
               <img
@@ -43,29 +48,27 @@ export const CustomizeCard = () => {
           </div>
           {customize?.showVariant &&
             product?.options.map((option, index) => (
-              <>
-                <div className="vcs-selection-wrapper">
-                  <p className="vcs-selection-label">{option.name}</p>
-                  <div className="vcs-selection-box">
-                    <select
-                      name={option.name}
-                      className={`js-vcs-option-${index}`}
-                      id={option.name}
-                    >
-                      {option.values.map((value) => (
-                        <option key={value} value={value}>
-                          {value}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+              <div key={`${option.name}-${index}`} className="vcs-selection-wrapper">
+                <p className="vcs-selection-label">{option.name}</p>
+                <div className="vcs-selection-box">
+                  <select
+                    name={option.name}
+                    className={`js-vcs-option-${index}`}
+                    id={option.name}
+                  >
+                    {option.values.map((value, index) => (
+                      <option key={`${value}-${index}`} value={value}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              </>
+              </div>
             ))}
           <select name="variant" id="vaiant" hidden className="js-vcs-variant-select">
-            {product?.variants.map((variant) => (
+            {product?.variants.map((variant, index) => (
               <option
-                key={variant.id}
+                key={`${variant.id}-${index}`}
                 value={variant.id}
                 data-price={variant.price}
                 data-compareatprice={variant.compareAtPrice}

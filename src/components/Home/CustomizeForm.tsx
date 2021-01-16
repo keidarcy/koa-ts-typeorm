@@ -81,14 +81,14 @@ export const CustomizeForm = () => {
               onChange={handleChange}
               placeholder={columns.cart.default}
             />
-            {colors.map((color) => (
-              <Stack key={color.color}>
+            {colors.map((color, index) => (
+              <Stack key={`${color.color}-${index}`}>
                 <Stack.Item fill>{color.title}</Stack.Item>
                 <VaniColorPicker color={color.color} field={color.field} />
               </Stack>
             ))}
-            {checkboxes.map((check) => (
-              <Stack key={check.title}>
+            {checkboxes.map((check, index) => (
+              <Stack key={`${check.title}-${index}`}>
                 <Stack.Item fill>{check.title}</Stack.Item>
                 <Checkbox
                   label="Basic checkbox"

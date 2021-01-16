@@ -16,10 +16,6 @@ export const VaniTitleBar: React.FC<VaniTitleBarProps> = ({}) => {
           onAction: () => router.push('/')
         },
         {
-          content: t.meun.customize,
-          onAction: () => router.push('/customize')
-        },
-        {
           content: t.meun.contact,
           onAction: () => router.push('/contact')
         },
