@@ -4,7 +4,6 @@ const withCSS = require('@zeit/next-css');
 const webpack = require('webpack');
 const apiKey = JSON.stringify(process.env.SHOPIFY_API_KEY);
 const tawkSrc = JSON.stringify(process.env.TAWK_SRC);
-console.log({ tawkSrc });
 
 module.exports = withCSS({
   webpack: (config) => {
@@ -15,5 +14,9 @@ module.exports = withCSS({
       use: 'raw-loader'
     });
     return config;
+  },
+  i18n: {
+    locales: ['en', 'ja'],
+    defaultLocale: 'en'
   }
 });

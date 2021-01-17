@@ -2,8 +2,65 @@
   "title": "Vani Cross Sell",
   "meun": {
     "home": "Home",
-    "customize": "Customize",
-    "contact": "Contact Us",
-    "faq": "FAQ"
+    "help": "Help"
+  },
+  "contact": {
+    "title": "Contact us anytime!",
+    "close": "Close",
+    "install": "We try to automatically install the widget on all the themes, but if the installation doesn't work well, we have personal support.",
+    "question": "If you have any question like customize our App to fit your shop or show/hide specific widget on specific page, please tell us! We would glad to assist you!",
+    "email": "Email Us",
+    "live": "Live Chat"
+  },
+  "banner": {
+    "title": "Tell us how we can support you more",
+    "contact": "contact us",
+    "support": "We offer Free personal technical support and we are happy to help you in any way we can."
+  },
+  "main": {
+    "title": "Title",
+    "showPages": "Shows on the following pages",
+    "preview": "preview",
+    "enable": "Enable",
+    "disable": "Disable",
+    "bsp": {
+      "name": "Best Selling Products",
+      "description": "Shows the best selling products of your Store based on your Orders.",
+      "pages": "Home page, Cart page",
+      "default": "People who bought this product, also bought"
+    },
+    "np": {
+      "name": "Newest Products",
+      "description": "Shows the newest products added to your Shopify store.",
+      "pages": "Home page, Cart page",
+      "default": "People who bought this product, also bought"
+    },
+    "rp": {
+      "name": "Recommended Products",
+      "description": "Shows the recommended products for every product based on Shopify recommendation algorithm.",
+      "pages": "Product pages",
+      "default": "People who bought this product, also bought"
+    },
+    "rvp": {
+      "name": "Recently Viewed Products",
+      "description": "Shows recently viewed products history. It's easier for your customers to revisit the previous products they saw and buy them.",
+      "pages": "All Shopify pages",
+      "default": "People who bought this product, also bought"
+    }
+  },
+  "footer": {
+    "contact": "Contact us"
+  },
+  "customize": {
+    "title": "Customize product card",
+    "number": "How many products to show",
+    "numberHelpText": "The recommendation is 4. The maximum number is 20.",
+    "cart": "Text in add to cart button",
+    "showCart": "Show add to cart button",
+    "showVariant": "Show variants information",
+    "showPrice": "Show price information",
+    "cartButtonColor": "Add to cart button color",
+    "titleColor": "Section Title color",
+    "textColor": "Text color"
   }
 }

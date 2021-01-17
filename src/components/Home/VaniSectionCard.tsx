@@ -9,13 +9,14 @@ import {
 } from '@shopify/polaris';
 import { useCallback, useContext } from 'react';
 import { VaniContext } from '../../utils/contexts/VCScontext';
+import { useT } from '../../utils/hooks/useT';
 import { VaniActionEnum } from '../../utils/type.helper';
 
 interface VaniSectionCardProps {
   active: boolean;
   name: string;
   description: string;
-  pages: string[];
+  pages: string;
   defaultTitle: string;
   previewUrl: string;
   title: string;
@@ -34,7 +35,8 @@ export const VaniSectionCard: React.FC<VaniSectionCardProps> = ({
   toogleField,
   titleField
 }) => {
-  const contentStatus = active ? 'Disable' : 'Enable';
+  const t = useT();
+  const contentStatus = active ? t.main.disable : t.main.enable;
 
   const { dispatch } = useContext(VaniContext);
 
@@ -72,7 +74,7 @@ export const VaniSectionCard: React.FC<VaniSectionCardProps> = ({
           </Card.Section>
           <Card.Section subdued={!active}>
             <Stack alignment="center" distribution="fill">
-              <Heading>Title</Heading>
+              <Heading>{t.main.title}</Heading>
               <TextField
                 label={name}
                 labelHidden
@@ -86,10 +88,10 @@ export const VaniSectionCard: React.FC<VaniSectionCardProps> = ({
           </Card.Section>
           <Card.Section subdued={!active}>
             <Stack alignment="center" distribution="equalSpacing">
-              <p>Shows on the following pages: {pages.join(',')}</p>
+              <p>{t.main.showPages}</p>
               {previewUrl && (
                 <Link url={previewUrl} external>
-                  preview
+                  {t.main.preview}
                 </Link>
               )}
             </Stack>

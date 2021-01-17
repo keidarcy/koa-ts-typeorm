@@ -56,7 +56,10 @@ const initProductValue: ProductInterface = {
 
 export const initVaniState = {
   customize: initCustomize,
-  product: initProductValue
+  product: initProductValue,
+  cartColorOpen: false,
+  titleColorOpen: false,
+  productNameColorOpen: false
 };
 
 export type VaniStateType = typeof initVaniState;

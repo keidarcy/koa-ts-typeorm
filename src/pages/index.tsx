@@ -1,13 +1,15 @@
-import { Banner, Card, Layout, Page, FormLayout } from '@shopify/polaris';
-import React, { useContext, useEffect } from 'react';
+import { Banner, Layout } from '@shopify/polaris';
+import React, { useContext, useEffect, useState } from 'react';
 import { CustomizeArea } from '../components/Home/CustomizeArea';
 import { VaniSectionCard } from '../components/Home/VaniSectionCard';
 import { VaniContext } from '../utils/contexts/VCScontext';
 import useCustomizeQuery from '../utils/hooks/useCustomizeQuery';
 import { VaniActionEnum } from '../utils/type.helper';
+import { VaniSpinner } from '../components/Layouts/VaniSpinner';
+import { useT } from '../utils/hooks/useT';
 
 const Index: React.FC = (): JSX.Element => {
-  const { status, data, error, isFetching } = useCustomizeQuery();
+  const { status, data } = useCustomizeQuery();
   const { state, dispatch } = useContext(VaniContext);
   useEffect(() => {
     dispatch({
@@ -17,62 +19,65 @@ const Index: React.FC = (): JSX.Element => {
     });
   }, [data]);
 
+  const t = useT();
+
   const features = [
     {
-      name: 'Best Selling Products',
-      description:
-        'For every product, recommends the frequently bought together items with that product. E.g.: People who buy Baby Formula also buy Diapers',
-      pages: ['Home page'],
+      name: t.main.bsp.name,
+      description: t.main.bsp.description,
+      pages: t.main.bsp.pages,
       previewUrl: `https://${state.customize?.shop}`,
-      defaultTitle: 'People who bought this product, also bought'
+      defaultTitle: t.main.bsp.default
     },
     {
-      name: 'Newest Products',
-      description:
-        'For every product, recommends the frequently bought together items with that product. E.g.: People who buy Baby Formula also buy Diapers',
-      pages: ['Home page'],
+      name: t.main.np.name,
+      description: t.main.np.description,
+      pages: t.main.np.pages,
       previewUrl: `https://${state.customize?.shop}`,
-      defaultTitle: 'People who bought this product, also bought'
+      defaultTitle: t.main.np.default
     },
     {
-      name: 'Recommended Products',
-      description:
-        'For every product, recommends the frequently bought together items with that product. E.g.: People who buy Baby Formula also buy Diapers',
-      pages: ['Product pages'],
-      previewUrl: `https://${state.customize?.shop}`,
-      defaultTitle: 'People who bought this product, also bought'
+      name: t.main.rp.name,
+      description: t.main.rp.description,
+      pages: t.main.rp.pages,
+      previewUrl: state.product?.url,
+      defaultTitle: t.main.rp.default
     },
     {
-      name: 'Recently Viewed Products',
-      description:
-        'For every product, recommends the frequently bought together items with that product. E.g.: People who buy Baby Formula also buy Diapers',
-      pages: ['Home page', 'Cart page', 'Product pages', 'Collections pages'],
-      previewUrl: `https://${state.customize?.shop}`,
-      defaultTitle: 'People who bought this product, also bought'
+      name: t.main.rvp.name,
+      description: t.main.rvp.description,
+      pages: t.main.rvp.pages,
+      previewUrl: state.product?.url,
+      defaultTitle: t.main.rvp.default
     }
   ];
 
+  const [showBanner, setShowBanner] = useState(true);
+
   return (
     <>
-      <Layout>
-        <Layout.Section>
-          <Layout>
-            <Layout.Section>
-              <Banner
-                title="USPS has updated their rates"
-                action={{ content: 'Update rates', url: '' }}
-                secondaryAction={{ content: 'Learn more' }}
-                status="info"
-                onDismiss={() => {}}
-              >
-                <p>Make sure you know how these changes affect your store.</p>
-              </Banner>
-            </Layout.Section>
-            {status === 'loading' ? (
-              'Loading...'
-            ) : status === 'error' ? (
-              <span>Error</span>
-            ) : (
+      {status === 'loading' ? (
+        <VaniSpinner color="#000" />
+      ) : status === 'error' ? (
+        <span>Error</span>
+      ) : (
+        <Layout>
+          <Layout.Section>
+            <Layout>
+              <Layout.Section>
+                {showBanner && (
+                  <Banner
+                    title={t.banner.title}
+                    action={{
+                      content: t.banner.contact,
+                      onAction: () => globalThis.Tawk_API.toggle()
+                    }}
+                    onDismiss={() => setShowBanner(false)}
+                  >
+                    <p>{t.banner.support}</p>
+                  </Banner>
+                )}
+              </Layout.Section>
               <>
                 {features.map((feature, index) =>
                   (() => {
@@ -143,13 +148,13 @@ const Index: React.FC = (): JSX.Element => {
                   })()
                 )}
               </>
-            )}
-          </Layout>
-        </Layout.Section>
-        <Layout.Section secondary>
-          <CustomizeArea />
-        </Layout.Section>
-      </Layout>
+            </Layout>
+          </Layout.Section>
+          <Layout.Section secondary>
+            <CustomizeArea />
+          </Layout.Section>
+        </Layout>
+      )}
     </>
   );
 };

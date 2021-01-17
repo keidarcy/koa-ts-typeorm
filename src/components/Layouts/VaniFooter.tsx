@@ -1,14 +1,17 @@
-import { FooterHelp, Link } from '@shopify/polaris';
+import { FooterHelp } from '@shopify/polaris';
 import React from 'react';
+import { useT } from '../../utils/hooks/useT';
 
-interface VaniFooterProps {}
-
-export const VaniFooter: React.FC<VaniFooterProps> = ({}) => {
+export const VaniFooter: React.FC = () => {
+  const t = useT();
   return (
     <FooterHelp>
-      <Link url="https://github.com/keidarcy" external>
-        お問い合わせ
-      </Link>
+      <span
+        style={{ textDecoration: 'underline', cursor: 'pointer' }}
+        onClick={() => globalThis.Tawk_API.toggle()}
+      >
+        {t.footer.contact}
+      </span>
     </FooterHelp>
   );
 };

@@ -13,12 +13,15 @@ export const liquidTemplate = (customize: Customize) => `
     {%- assign collection = collections['bsp'] -%}
     <div class="vcs-products-container">
       {% for product in collection.products limit: max_number %}
+        {% if product.images[0] %}
         <div class="vcs-card js-vcs-card" id="vcs-card-container">
 
           <div class="vcs-image">
             <a href={{product.url}}>
               <img alt={{product.title}} class="vcs-image-hover" src={{product.images[0] | img_url: '1000x1000', crop: 'bottom' }}/>
-              <img alt={{product.title}} class="vcs-image-back" src={{product.images[1] | img_url: '1000x1000', crop: 'bottom' }}/>
+              {% if product.images[1] %}
+                <img alt={{product.title}} class="vcs-image-back" src={{product.images[1] | img_url: '1000x1000', crop: 'bottom' }}/>
+              {% endif %}
             </a>
           </div>
 
@@ -73,6 +76,7 @@ export const liquidTemplate = (customize: Customize) => `
             </button>
           </form>
         </div>
+        {% endif %}
       {% endfor %}
     </div>
   </div>
@@ -86,12 +90,15 @@ export const liquidTemplate = (customize: Customize) => `
     {%- assign collection = collections['np'] -%}
     <div class="vcs-products-container">
       {% for product in collection.products limit: max_number %}
+        {% if product.images[0] %}
         <div class="vcs-card js-vcs-card" id="vcs-card-container">
 
           <div class="vcs-image">
             <a href={{product.url}}>
               <img alt={{product.title}} class="vcs-image-hover" src={{product.images[0] | img_url: '1000x1000', crop: 'bottom' }}/>
+                {% if product.images[1] %}
               <img alt={{product.title}} class="vcs-image-back" src={{product.images[1] | img_url: '1000x1000', crop: 'bottom' }}/>
+          {% endif %}
             </a>
           </div>
 
@@ -148,6 +155,7 @@ export const liquidTemplate = (customize: Customize) => `
             </button>
           </form>
         </div>
+        {% endif %}
       {% endfor %}
     </div>
   </div>
@@ -268,7 +276,7 @@ export const liquidTemplate = (customize: Customize) => `
 
     const storedProducts = JSON.parse(item);
 
-    if(['product'].includes('{{template}}')) {
+    if(['product'].includes('{{template}}') && newProduct.hasImage) {
 
         let newProducts = [];
 
@@ -301,13 +309,19 @@ export const liquidTemplate = (customize: Customize) => `
         <div class="vcs-image">
           <a href=\${product.url}>
             <img alt=\${product.title} class="vcs-image-hover" src=\${product.images[0]}/>
-            <img alt=\${product.title} class="vcs-image-back" src=\${product.images[1]}/>
+          \`;
+
+            const number = product.images[1].includes('gif') ? 0 : 1;
+            recentlyViewedProductsHtml += \`
+            <img alt=\${product.title} class="vcs-image-back" src=\${product.images[number]}/>
+          \`;
+            recentlyViewedProductsHtml += \`
           </a>
         </div>
 
         <div>
-          <p class="vcs-title" style="color: ${customize?.productNameColor};">{{product.title}}</p>
-          <p class="vcs-title" style="color: ${customize?.productNameColor};">{{product.vendor}}</p>
+          <p class="vcs-title" style="color: ${customize?.productNameColor};">\${product.title}</p>
+          <p class="vcs-title" style="color: ${customize?.productNameColor};">\${product.vendor}</p>
           <div class="vcs-title" style="display: ${customize?.showPrice ? 'block' : 'none'};">
             \`;
         if(product.compare_at_price){
@@ -356,7 +370,7 @@ export const liquidTemplate = (customize: Customize) => `
         if(product.has_only_default_variant){
 
           recentlyViewedProductsHtml += \`
-            <input name="id" value="{{ product.first_available_variant.id }}" type="hidden">
+            <input name="id" value="\${product.variants[0].id}" type="hidden">
           \`;
 
       } else {
@@ -398,18 +412,25 @@ export const liquidTemplate = (customize: Customize) => `
     const {products} = await rawProducts.json()
     let recommendsHtml = "";
     products.forEach(product => {
+      if(product.images.length){
       recommendsHtml += \`
         <div class="vcs-card js-vcs-card" id="vcs-card-container">
           <div class="vcs-image">
             <a href=\${product.url}>
               <img alt=\${product.title} class="vcs-image-hover" src=\${product.images[0]}/>
-              <img alt=\${product.title} class="vcs-image-back" src=\${product.images[1]}/>
-            </a>
-          </div>
+          \`;
+
+            const number = product.images.length === 1 ? 0 : 1;
+            recommendsHtml += \`
+            <img alt=\${product.title} class="vcs-image-back" src=\${product.images[number]}/>
+          \`;
+            recommendsHtml += \`
+          </a>
+        </div>
 
           <div>
-          <p class="vcs-title" style="color: ${customize?.productNameColor};">{{product.title}}</p>
-          <p class="vcs-title" style="color: ${customize?.productNameColor};">{{product.vendor}}</p>
+          <p class="vcs-title" style="color: ${customize?.productNameColor};">\${product.title}</p>
+          <p class="vcs-title" style="color: ${customize?.productNameColor};">\${product.vendor}</p>
           <div class="vcs-title" style="display: ${customize?.showPrice ? 'block' : 'none'};">
               \`;
 
@@ -492,6 +513,7 @@ export const liquidTemplate = (customize: Customize) => `
           </form>
         </div>
       \`;
+    }
       })
       return recommendsHtml;
   }
@@ -547,6 +569,7 @@ export const liquidTemplate = (customize: Customize) => `
   if (${customize?.recentlyViewedProducts}) {
     document.querySelector('.js-rvp-container').style.display = 'block';
     const rvpHtml = vcs.handleRecentlyProduct({
+      hasImage: {{ product.images | json}}.length,
       available: {{ product.available | json }},
       handle: '{{ product.handle }}',
       title: '{{ product.title }}',
@@ -565,9 +588,7 @@ export const liquidTemplate = (customize: Customize) => `
     })
   document.querySelector('.js-rvp-container').querySelector('.vcs-products-container').innerHTML = rvpHtml;
   } else {
-    if(['product'].includes('{{template}}')) {
-      document.querySelector('.js-rvp-container').style.display = 'none';
-    }
+    document.querySelector('.js-rvp-container').style.display = 'none';
   }
 
 

@@ -3,19 +3,39 @@ import React, { useCallback, useContext } from 'react';
 import { VaniColorPicker } from './/VaniColorPicker';
 import { VaniContext } from '../../utils/contexts/VCScontext';
 import { VaniActionEnum } from '../../utils/type.helper';
+import { useT } from '../../utils/hooks/useT';
 
 export const CustomizeForm = () => {
   const { state, dispatch } = useContext(VaniContext);
 
+  const t = useT();
+
+  const columns = {
+    showNumber: {
+      title: t.customize.number,
+      field: 'showNumber',
+      default: 4
+    },
+    cart: {
+      title: t.customize.cart,
+      field: 'cartText',
+      default: 'ADD TO CART'
+    }
+  };
+
   const checkboxes = [
-    { title: 'Show Add to Cart', isOn: state.customize?.showCart, field: 'showCart' },
     {
-      title: 'Show Variants information',
+      title: t.customize.showCart,
+      isOn: state.customize?.showCart,
+      field: 'showCart'
+    },
+    {
+      title: t.customize.showVariant,
       isOn: state.customize?.showVariant,
       field: 'showVariant'
     },
     {
-      title: 'Show Price information',
+      title: t.customize.showPrice,
       isOn: state.customize?.showPrice,
       field: 'showPrice'
     }
@@ -23,34 +43,21 @@ export const CustomizeForm = () => {
 
   const colors = [
     {
-      title: 'Add to Cart button color',
+      title: t.customize.cartButtonColor,
       color: state.customize?.cartColor,
       field: 'cartColor'
     },
     {
-      title: 'Recommendation Title color',
+      title: t.customize.titleColor,
       color: state.customize?.titleColor,
       field: 'titleColor'
     },
     {
-      title: 'Product Name / Price color',
+      title: t.customize.textColor,
       color: state.customize?.productNameColor,
       field: 'productNameColor'
     }
   ];
-
-  const columns = {
-    showNumber: {
-      title: 'How many product to show',
-      field: 'showNumber',
-      default: 4
-    },
-    cart: {
-      title: 'Text in cart button',
-      field: 'cartText',
-      default: 'ADD TO CART'
-    }
-  };
 
   const handleChange = useCallback((value, field) => {
     dispatch({
@@ -62,7 +69,7 @@ export const CustomizeForm = () => {
 
   return (
     <Layout.Section oneHalf>
-      <Card title="Customize Your Product Card">
+      <Card title={t.customize.title}>
         <Card.Section>
           <FormLayout>
             <TextField
@@ -72,7 +79,8 @@ export const CustomizeForm = () => {
               id={columns.showNumber.field}
               onChange={handleChange}
               placeholder={columns.showNumber.default.toString()}
-              helpText="The recommendation is 4. The maximum number is 20."
+              helpText={t.customize.numberHelpText}
+              max={20}
             />
             <TextField
               label={columns.cart.title}
