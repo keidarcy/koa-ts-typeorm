@@ -289,8 +289,6 @@ export const liquidTemplate = (customize: Customize) => `
 
         const productsToStore = newProducts.slice(0, {{ max_number}})
 
-        console.log({productsToStore})
-
         const productsString = JSON.stringify(productsToStore);
         localStorage.setItem(vcs.localKey, productsString);
     }
@@ -520,7 +518,6 @@ export const liquidTemplate = (customize: Customize) => `
 
   // Mobile Responsive
   if(window.innerWidth < 768 || window.innerWidth < 300*'{{ max_number }}') {
-    console.log({innerWidth})
     document.querySelectorAll('.vcs-products-container').forEach(g => {
       g.style.justifyContent = 'start'
     })
