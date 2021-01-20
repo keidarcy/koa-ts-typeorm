@@ -1,11 +1,10 @@
 const { parsed: localEnv } = require('dotenv').config();
-const withCSS = require('@zeit/next-css');
 
 const webpack = require('webpack');
 const apiKey = JSON.stringify(process.env.SHOPIFY_API_KEY);
 const tawkSrc = JSON.stringify(process.env.TAWK_SRC);
 
-module.exports = withCSS({
+module.exports = {
   webpack: (config) => {
     const env = { API_KEY: apiKey, TAWK_SRC: tawkSrc };
     config.plugins.push(new webpack.DefinePlugin(env));
@@ -18,5 +17,6 @@ module.exports = withCSS({
   i18n: {
     locales: ['en', 'ja'],
     defaultLocale: 'en'
-  }
-});
+  },
+  poweredByHeader: false
+};

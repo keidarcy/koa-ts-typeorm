@@ -1,7 +1,6 @@
 import { Layout } from '@shopify/polaris';
 import { useContext, useEffect, useRef } from 'react';
 import { VaniContext } from '../../utils/contexts/VCScontext';
-import './card.css';
 
 export const CustomizeCard = () => {
   const {
