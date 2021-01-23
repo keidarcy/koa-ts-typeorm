@@ -526,7 +526,8 @@ export const liquidTemplate = (customize: Customize) => `
   // BSP
   if (${customize?.bestSellingProducts}) {
     if(['index', 'cart'].includes('{{template}}')) {
-      document.querySelector('.js-bsp-container').style.display = 'block';
+        document.querySelector('.js-bsp-container').style.display = 'block';
+        const containerElement = document.querySelector('.js-bsp-container').querySelector('.vcs-products-container');
     }
   } else {
     if(['index', 'cart'].includes('{{template}}')) {
@@ -537,7 +538,8 @@ export const liquidTemplate = (customize: Customize) => `
   // NP
   if (${customize?.newestProducts}) {
     if(['index', 'cart'].includes('{{template}}')) {
-      document.querySelector('.js-np-container').style.display = 'block';
+        document.querySelector('.js-np-container').style.display = 'block';
+        const containerElement = document.querySelector('.js-np-container').querySelector('.vcs-products-container');
     }
   } else {
     if(['index', 'cart'].includes('{{template}}')) {
@@ -551,7 +553,8 @@ export const liquidTemplate = (customize: Customize) => `
       document.querySelector('.js-rp-container').style.display = 'block';
       const fn = async () => {
         const recommendsHtml = await vcs.renderRecommendProducts('{{ product.id }}');
-        document.querySelector('.js-rp-container').querySelector('.vcs-products-container').innerHTML = recommendsHtml;
+        const containerElement = document.querySelector('.js-rp-container').querySelector('.vcs-products-container');
+        containerElement.innerHTML = recommendsHtml;
         vcs.main();
       }
       fn();
@@ -587,6 +590,7 @@ export const liquidTemplate = (customize: Customize) => `
     if (!rvpHtml) {
         document.querySelector('.js-rvp-container').style.display = 'none';
     }
+
   } else {
     document.querySelector('.js-rvp-container').style.display = 'none';
   }
