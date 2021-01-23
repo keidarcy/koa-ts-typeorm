@@ -566,7 +566,7 @@ export const liquidTemplate = (customize: Customize) => `
   if (${customize?.recentlyViewedProducts}) {
     document.querySelector('.js-rvp-container').style.display = 'block';
     const rvpHtml = vcs.handleRecentlyProduct({
-      hasImage: {{ product.images | json}}.length,
+      hasImage: {{ product.images | json}} && {{ product.images | json}}.length,
       available: {{ product.available | json }},
       handle: '{{ product.handle }}',
       title: '{{ product.title }}',
@@ -583,7 +583,10 @@ export const liquidTemplate = (customize: Customize) => `
       options: {{ product.options_with_values | json }},
       variants: {{ product.variants | json }}
     })
-  document.querySelector('.js-rvp-container').querySelector('.vcs-products-container').innerHTML = rvpHtml;
+    document.querySelector('.js-rvp-container').querySelector('.vcs-products-container').innerHTML = rvpHtml;
+    if (!rvpHtml) {
+        document.querySelector('.js-rvp-container').style.display = 'none';
+    }
   } else {
     document.querySelector('.js-rvp-container').style.display = 'none';
   }
