@@ -12,6 +12,8 @@ import serverWork from './server.helper';
 
 serverWork();
 
+console.log({ dev: isDev });
+
 const app = next({ dev: isDev });
 
 const handle = app.getRequestHandler();
