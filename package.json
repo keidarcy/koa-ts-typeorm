@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node server",
-    "start": "cross-env NODE_ENV=production ts-node server",
+    "start": "cross-env NODE_ENV=production node server-build",
     "build": "next build"
   },
   "dependencies": {
@@ -40,7 +40,7 @@
     "@types/koa": "^2.11.6",
     "@types/koa-session": "^5.10.3",
     "@types/node": "^14.14.16",
-    "@types/react": "^17.0.0",
+    "@types/react": "17.0.2",
     "@types/react-color": "^3.0.4",
     "babel-plugin-macros": "^3.0.1",
     "ts-node": "^9.1.1",
