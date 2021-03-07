@@ -1,7 +1,6 @@
 import { Frame, Page } from '@shopify/polaris';
 import { VaniSaveBar } from './VaniSaveBar';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { VaniContextProvider } from '../../utils/contexts/VCScontext';
 
 interface VaniProviderProps {
@@ -23,7 +22,6 @@ export const VaniProvider: React.FC<VaniProviderProps> = ({ children }) => {
           <VaniSaveBar />
           <Page>{children}</Page>
         </VaniContextProvider>
-        <ReactQueryDevtools initialIsOpen />
       </QueryClientProvider>
     </Frame>
   );
