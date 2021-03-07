@@ -3,7 +3,6 @@ import Head from 'next/head';
 import type { AppProps, AppContext } from 'next/app';
 import { IncomingMessage } from 'http';
 import '@shopify/polaris/dist/styles.css';
-import './card.css';
 import { AppProvider } from '@shopify/polaris';
 import { Provider } from '@shopify/app-bridge-react';
 import translations from '@shopify/polaris/locales/en.json';
@@ -11,10 +10,11 @@ import VaniClientRouter from '../components/Layouts/VaniClientRouter';
 import VaniRoutePropagator from '../components/Layouts/VaniRoutePropagator';
 import React, { useEffect } from 'react';
 import { initApp } from '../utils/front.helper';
-import t from '../utils/en.json';
 import { VaniTitleBar } from '../components/Layouts/VaniTitleBar';
 import { VaniFooter } from '../components/Layouts/VaniFooter';
 import { VaniProvider } from '../components/Layouts/VaniProvider';
+import t from '../utils/en.json';
+import '../../assets/card.css';
 
 interface MyAppInterface extends AppProps {
   shopOrigin: string;

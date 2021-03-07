@@ -14,7 +14,6 @@ module.exports = {
     });
     return config;
   },
-  distDir: 'build',
   i18n: {
     locales: ['en', 'ja'],
     defaultLocale: 'en'

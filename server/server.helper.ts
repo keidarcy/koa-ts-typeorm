@@ -8,7 +8,7 @@ function callback(err) {
 
 export default () => {
   fs.copyFile(
-    path.resolve(__dirname, '../pages/card.css'),
+    path.resolve(__dirname, '../assets/card.css'),
     path.resolve(__dirname, '../assets/vcs.css.liquid'),
     callback
   );

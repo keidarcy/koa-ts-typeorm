@@ -1,8 +1,9 @@
 import { Customize, PrismaClient } from '@prisma/client';
 import Shopify from 'shopify-api-node';
 import { VCSCollection } from '../utils/type.helper';
-import { liquidTemplate } from '../assets/vcsLiquid';
-import css from '../assets/vcs.css.liquid';
+import { liquidTemplate } from '../../assets/vcsLiquid';
+import css from '../../assets/vcs.css.liquid';
+
 export class CustomizeService {
   constructor(
     public shop: string,

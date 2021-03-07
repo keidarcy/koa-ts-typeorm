@@ -1,6 +1,6 @@
 import 'isomorphic-fetch';
 import 'colors';
-import Koa, { DefaultState, DefaultContext, Context } from 'koa';
+import Koa, { DefaultState, DefaultContext } from 'koa';
 import next from 'next';
 import session from 'koa-session';
 import { verifyRequest } from '@shopify/koa-shopify-auth';
