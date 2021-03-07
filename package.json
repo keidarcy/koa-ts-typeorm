@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node server",
-    "start": "cross-env NODE_ENV=production node server-build",
-    "build": "next build"
+    "start": "cross-env NODE_ENV=production node build",
+    "build": "tsc ./server/*.ts --outDir build --esModuleInterop; next build"
   },
   "dependencies": {
     "@prisma/client": "^2.13.1",
