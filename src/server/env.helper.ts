@@ -13,5 +13,5 @@ export default {
   SHOPIFY_API_SCOPE: process.env.SHOPIFY_API_SCOPE ?? ''
 };
 
-export const port = parseInt(process.env.PORT as string, 10) || 3000;
+export const port = parseInt(process.env.PORT, 10) || 3000;
 export const isDev = process.env.NODE_ENV !== 'production';

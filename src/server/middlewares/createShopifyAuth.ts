@@ -1,6 +1,6 @@
 import { OAuthStartOptions } from '@shopify/koa-shopify-auth/dist/src/types';
 import { Context } from 'koa';
-import env from '../../utils/env.helper';
+import env from '../env.helper';
 import shopifyAuth from '@shopify/koa-shopify-auth';
 
 const authConfig: OAuthStartOptions = {

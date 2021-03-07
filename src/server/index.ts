@@ -4,7 +4,7 @@ import Koa, { DefaultState, DefaultContext, Context } from 'koa';
 import next from 'next';
 import session from 'koa-session';
 import { verifyRequest } from '@shopify/koa-shopify-auth';
-import env, { isDev, port } from '../utils/env.helper';
+import env, { isDev, port } from './env.helper';
 import { addContext } from './middlewares/addToContext';
 import { createShopifyAuth } from './middlewares/createShopifyAuth';
 import { letNextJsHandle } from './middlewares/letNextJsHandle';
