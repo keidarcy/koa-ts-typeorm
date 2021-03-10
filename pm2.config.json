@@ -1,0 +1,11 @@
+{
+  "script": "./build/index.js",
+  "env": {
+    "NODE_ENV": "development",
+    "name": "dev_app_name"
+  },
+  "env_production": {
+    "NODE_ENV": "production",
+    "name": "prod_app_name"
+  }
+}
