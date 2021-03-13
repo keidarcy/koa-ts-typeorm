@@ -6,6 +6,7 @@ const handler = nc<NextApiRequest, NextApiResponse>();
 
 const prisma = new PrismaClient();
 
+// NOTE: not used
 handler.get(async (req, res) => {
   const shop = req.cookies.shopOrigin;
 

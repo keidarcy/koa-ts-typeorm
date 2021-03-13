@@ -15,6 +15,7 @@ interface ExtendedResponse {
   cookie: (name: string, value: string) => void;
 }
 
+// Note: no use
 handler.get<ExtendedRequest, ExtendedResponse>(async (req, res) => {
   const { id } = req.query;
 
